@@ -1,0 +1,98 @@
+.container-AdminAccount {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+
+    .content {
+        max-width: 550px;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        .div-header {
+            margin: 15px 0;
+            width: 100%;
+            padding: 0 20px;
+            justify-content: space-between;
+            display: flex;
+            align-items: center;
+
+
+            .div-title {
+                width: 180px;
+                font-size: 1.3em;
+
+                h1 {
+                    background: linear-gradient(to right, #164dc2 0%, #330867 100%);
+                    background-clip: text;
+                    color: transparent;
+                }
+
+                h2 {
+                    text-align: end;
+                    font-size: 1.2em;
+                }
+            }
+
+            img {
+                width: 70px;
+            }
+        }
+
+        .div-acesso {
+            font-size: 1em;
+            width: 100%;
+            margin-bottom: 20px;
+
+            h1 {
+                background: linear-gradient(to right, #164dc2 0%, #100320 100%);
+                background-clip: text;
+                color: transparent;
+            }
+        }
+
+        .div-form {
+            width: 100%;
+
+            form {
+                display: flex;
+                flex-direction: column;
+                padding: 50px 20px;
+
+                input {
+                    font-size: 1.1em;
+                    padding: 22px;
+                    border-radius: 10px;
+                    border: 1px solid #3498db;
+                    margin: 12px 0;
+                }
+
+                input:focus {
+                    outline: 1px solid #3333336b;
+                }
+
+                button {
+                    background-color: #4067b9;
+                    padding: 20px;
+                    border-radius: 10px;
+                    border: 0;
+                    transition: all .2s ease-in-out;
+                    cursor: pointer;
+                    color: #fff;
+                    margin: 20px 0;
+                    font-size: 18px;
+                    margin-bottom: 90px;
+
+                    &:hover {
+                        background-color: #164dc2
+                    }
+                }
+            }
+        }
+    }
+}
