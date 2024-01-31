@@ -42,7 +42,9 @@ export function Home() {
 
                     <div className="content-main">
                         <div className="div-colum">
-                            <span className="dia-culto">18 JUN |</span>
+                            <span className="dia-culto">18</span>
+                            <span className="mes-culto">JUN</span>
+                            <span className="barrinha">|</span>
                         </div>
                         <div className="div-row-content">
                             <span>Domingo</span>
