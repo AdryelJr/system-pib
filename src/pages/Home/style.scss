@@ -116,26 +116,97 @@
             left: -50px;
             width: 0;
             height: 100%;
-            padding: 50px 15px;
-            background-color: #ccc;
+            padding: 50px 30px;
+            background-color: #F8F8FC;
+            border-right: 1px solid #ccc;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            border-radius: 0 20px 20px 0;
             transition: all .4s ease-in-out;
 
-            .slide-content{
+            .slide-content {
                 display: none;
+                color: #333;
+
+                .user-profile {
+                    position: relative;
+                    background-color: #dce3eb;
+                    padding: 10px;
+                    border-radius: 18px;
+                    display: flex;
+                    transition: all .2s ease-in-out;
+
+                    img {
+                        width: 50px;
+                    }
+
+                    p {
+                        margin: 10px;
+                    }
+
+                    span {
+                        position: absolute;
+                        right: 15px;
+                        top: 30%;
+                        font-size: 20px;
+                    }
+
+                    &:hover {
+                        opacity: .8;
+                        cursor: pointer;
+                    }
+                }
+
+                .nav-links {
+                    .div-ministerio {
+                        padding: 35px 0 25px 10px;
+                        border-bottom: 1px solid #ccc;
+
+                        h3 {
+                            font-weight: 400;
+                        }
+
+                        h4 {
+                            font-weight: 400;
+                            margin-left: 10px;
+                        }
+                    }
+
+                    .close {
+                        padding: 0 8px;
+                        border-radius: 10px;
+                        transition: all .2s ease-in-out;
+                        display: flex;
+                        margin-top: 10px;
+                        svg {
+                            width: 25px;
+                            margin-right: -15px;
+                        }
+
+                        button {
+                            background-color: transparent;
+                            border: 0;
+                            cursor: pointer;
+                            padding: 10px 20px;
+                            font-size: 15px;
+                        }
+
+                        &:hover{
+                            background-color: #cccccc3c;
+                        }
+                    }
+                }
             }
 
-            .slide-content-open{
+            .slide-content-open {
                 display: block;
             }
         }
 
         .slide-bar-open {
+            left: 0;
             opacity: 1;
-            width: 60%;
+            width: 70%;
         }
-
-        
-
-
     }
 }
