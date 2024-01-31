@@ -1,14 +1,25 @@
-
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import LogoImg from '../../assets/logo-removebg-preview.png'
+import { useUser } from '../../context/AuthContext';
 
 import './style.scss'
 
 export function AdminAccount() {
+    const { createUser } = useUser();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [login, setLogin] = useState('');
     const [password, setPassword] = useState('')
+
+    function handleCreateAccountForm(event: FormEvent) {
+        event.preventDefault();
+
+        const newUser = {
+            name: name,
+            email: email,
+            password: password
+        };
+        createUser(newUser);
+    }
 
     return (
         <div className='container-AdminAccount'>
@@ -22,7 +33,7 @@ export function AdminAccount() {
                 </div>
 
                 <div className='div-form'>
-                    <form>
+                    <form onSubmit={handleCreateAccountForm}>
                         <div className='div-acesso'>
                             <h1>Acesso</h1>
                         </div>
@@ -39,12 +50,6 @@ export function AdminAccount() {
                             value={email}
                         />
                         <input
-                            type="text"
-                            placeholder='Login/Usuário'
-                            onChange={(e) => (setLogin(e.target.value))}
-                            value={login}
-                        />
-                        <input
                             type="password"
                             placeholder='Senha'
                             onChange={(e) => (setPassword(e.target.value))}
@@ -57,3 +62,4 @@ export function AdminAccount() {
         </div>
     )
 }
+
