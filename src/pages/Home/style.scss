@@ -107,22 +107,35 @@
             }
         }
 
-        .button-sum {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            padding: 9px 15px;
-            font-size: 20px;
-            background-color: #4579b4;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
 
-            &:hover {
-                background-color: #82a8d3;
+        // slide bar ===========================================================
+
+        .slide-bar {
+            position: absolute;
+            top: 0;
+            left: -50px;
+            width: 0;
+            height: 100%;
+            padding: 50px 15px;
+            background-color: #ccc;
+            transition: all .4s ease-in-out;
+
+            .slide-content{
+                display: none;
+            }
+
+            .slide-content-open{
+                display: block;
             }
         }
+
+        .slide-bar-open {
+            opacity: 1;
+            width: 60%;
+        }
+
+        
+
+
     }
 }
