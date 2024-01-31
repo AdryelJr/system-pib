@@ -1,4 +1,5 @@
 .container-home {
+    background-color: #F8F8FC;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,12 +23,12 @@
             .hamb {
                 width: 20%;
 
-                svg{
-                    width: 40px;
+                svg {
+                    width: 45px;
                     cursor: pointer;
                     transition: all .2s ease-in-out;
 
-                    &:hover{
+                    &:hover {
                         opacity: .8;
                     }
                 }
@@ -47,6 +48,49 @@
 
                 img {
                     width: 55px;
+                }
+            }
+        }
+
+        main {
+            h3 {
+                background-color: #3498db7d;
+                border-radius: 20px;
+                padding: 10px;
+                width: 45%;
+                text-align: center;
+                margin: 25px 0;
+                font-weight: 400;
+            }
+
+            .content-main {
+                display: flex;
+                margin-bottom: 40px;
+
+                .div-colum {
+                    background-color: red;
+                }
+
+                .div-row-content {
+                    background-color: blue;
+                    width: 100%;
+
+                    span {
+                        margin: 0 10px;
+                    }
+
+                    .row-content {
+                        color: #113583;
+                        background-color: #7e7676;
+                        padding: 10px;
+                        border-radius: 20px;
+                        width: 100%;
+
+                        img {
+                            width: 35px;
+                            border-radius: 9999px;
+                        }
+                    }
                 }
             }
         }

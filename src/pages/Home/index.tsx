@@ -35,6 +35,26 @@ export function Home() {
                     </div>
                 </header>
 
+                <main>
+                    <div className="main-header">
+                        <h3>Programações</h3>
+                    </div>
+
+                    <div className="content-main">
+                        <div className="div-colum">
+                            <span className="dia-culto">18 JUN |</span>
+                        </div>
+                        <div className="div-row-content">
+                            <span>Domingo</span>
+                            <div className="row-content">
+                                <p>Culto Noite</p>
+                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="confirmados" />
+                                <p>18:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+
 
                 <button onClick={handleSignOut}>Sair</button>
 
