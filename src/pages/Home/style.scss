@@ -6,7 +6,7 @@
     width: 100%;
 
     .content {
-        border: 2px solid black;
+        position: relative;
         width: 420px;
         max-width: 420px;
         max-height: 100vh;
@@ -88,20 +88,40 @@
                         margin-top: 5px;
                         color: #113583;
                         background-color: #dce3eb;
-                        padding: 10px;
+                        padding: 2px 20px;
                         border-radius: 15px;
                         width: 100%;
 
-                        p{
+                        p {
                             font-weight: 500;
+                            margin: 8px 0;
                         }
 
                         img {
+                            margin: 0 6px;
                             width: 35px;
                             border-radius: 9999px;
                         }
                     }
                 }
+            }
+        }
+
+        .button-sum {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            padding: 9px 15px;
+            font-size: 20px;
+            background-color: #4579b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+
+            &:hover {
+                background-color: #82a8d3;
             }
         }
     }

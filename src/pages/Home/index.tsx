@@ -51,6 +51,23 @@ export function Home() {
                             <div className="row-content">
                                 <p>Culto Noite</p>
                                 <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="confirmados" />
+                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="confirmados" />
+                                <p>18:00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="content-main">
+                        <div className="div-colum">
+                            <span className="dia-culto">24</span>
+                            <span className="mes-culto">JUN</span>
+                            <span className="barrinha">|</span>
+                        </div>
+                        <div className="div-row-content">
+                            <span>Domingo</span>
+                            <div className="row-content">
+                                <p>Culto Noite</p>
+                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="confirmados" />
                                 <p>18:00</p>
                             </div>
                         </div>
@@ -60,6 +77,7 @@ export function Home() {
 
                 <button onClick={handleSignOut}>Sair</button>
 
+                <button className="button-sum">+</button>
 
             </div>
         </div>
