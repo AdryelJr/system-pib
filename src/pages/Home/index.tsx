@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useUser } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom";
+import { handleSignOut } from "../../services/operacoes";
+import { logoImg } from '../../assets/logo-removebg-preview.png';
 
 export function Home() {
     const navigate = useNavigate();
@@ -10,7 +12,6 @@ export function Home() {
         if (!authChecked) {
             return;
         }
-
         if (!user) {
             navigate('/');
         }
@@ -18,7 +19,21 @@ export function Home() {
 
     return (
         <div className="contianer-home">
-            Home
+            <div className="content">
+                <header>
+                    <div className="hamb">
+                        icon hamb
+                    </div>
+                    <div className="div-nav">
+                        <img src={logoImg} alt="logo" />
+                    </div>
+                </header>
+
+
+                <button onClick={handleSignOut}>Sair</button>
+
+
+            </div>
         </div>
     )
 }

@@ -54,7 +54,6 @@ export function UserProvider(props: UserProviderProps) {
                     displayName: newUser.name,
                 });
                 setUser(user)
-                console.log('Usuário criado', user.displayName)
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -70,7 +69,6 @@ export function UserProvider(props: UserProviderProps) {
             .then((userCredential) => {
                 const user = userCredential.user;
                 setUser(user)
-                console.log('user logado ', user.displayName)
             })
             .catch((error) => {
                 const errorCode = error.code;
