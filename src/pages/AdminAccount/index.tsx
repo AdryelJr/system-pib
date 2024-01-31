@@ -1,14 +1,12 @@
 import { FormEvent, useState } from 'react'
 import LogoImg from '../../assets/logo-removebg-preview.png'
-import { useUser } from '../../context/AuthContext';
-
+import { createUser } from '../../services/operacoes';
 import './style.scss'
 
 export function AdminAccount() {
-    const { createUser } = useUser();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('')
+    const [password, setPassword] = useState('');
 
     function handleCreateAccountForm(event: FormEvent) {
         event.preventDefault();
@@ -18,7 +16,16 @@ export function AdminAccount() {
             email: email,
             password: password
         };
-        createUser(newUser);
+        createUser(newUser)
+            .then(() => {
+                setName('');
+                setEmail('');
+                setPassword('');
+                alert('New user created');
+            })
+            .catch((error) => {
+                console.error('Erro ao criar usuário:', error.message);
+            });
     }
 
     return (

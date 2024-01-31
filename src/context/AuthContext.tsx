@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { auth } from '../services/firebase';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,8 @@ type UserTypeCreate = {
     name: string,
     email: string,
     password: string,
-    photoURL?: string
+    photoURL?: string,
+    displayName?: string
 }
 
 type UserTypeSignIn = {
@@ -22,7 +23,6 @@ type UserProviderProps = {
 type AuthContextType = {
     user: UserTypeCreate;
     signIn: (userLogin: UserTypeSignIn) => void;
-    createUser: (newUser: UserTypeCreate) => void;
     authChecked: boolean
 }
 
@@ -38,30 +38,9 @@ export function UserProvider(props: UserProviderProps) {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user);
             setAuthChecked(true);
-            if (user) {
-                navigate('/home');
-            }
         });
-
         return () => unsubscribe();
     }, []);
-
-    async function createUser(newUser: UserTypeCreate) {
-        createUserWithEmailAndPassword(auth, newUser.email, newUser.password)
-            .then(async (userCredential) => {
-                const user = userCredential.user;
-                await updateProfile(user, {
-                    displayName: newUser.name,
-                });
-                setUser(user)
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(errorCode)
-                console.log(errorMessage)
-            });
-    }
 
 
     async function signIn(userLogin: UserTypeSignIn) {
@@ -69,6 +48,9 @@ export function UserProvider(props: UserProviderProps) {
             .then((userCredential) => {
                 const user = userCredential.user;
                 setUser(user)
+                if (user) {
+                    navigate('/home');
+                }
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -79,7 +61,7 @@ export function UserProvider(props: UserProviderProps) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, signIn, createUser, authChecked }}>
+        <AuthContext.Provider value={{ user, signIn, authChecked }}>
             {props.children}
         </AuthContext.Provider>
     );
