@@ -8,7 +8,7 @@ export function AdminAccount() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState('')
 
     return (
         <div className='container-AdminAccount'>
