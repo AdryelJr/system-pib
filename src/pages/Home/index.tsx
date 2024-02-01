@@ -9,6 +9,7 @@ import { ImgProfile } from "../../componentes/ImgProfile/ImgProfile";
 import { onValue, ref } from "firebase/database";
 import { database } from "../../services/firebase";
 import { InfoDia } from "../../componentes/InfoDia";
+import LoadingSpinner from "../../componentes/loadingComponent";
 
 type Dia = {
     id: string;
@@ -59,8 +60,17 @@ export function Home() {
         });
     }, []);
 
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+    }, []);
+
     return (
         <div className='container-home'>
+            {isLoading && <LoadingSpinner />}
             <div className="content" >
                 <header>
                     <div className="hamb" onClick={slideBarClick}>
@@ -100,8 +110,6 @@ export function Home() {
                             />
                         );
                     })}
-
-
                 </main>
 
 
