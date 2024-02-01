@@ -6,6 +6,18 @@ import logoImg from '../../assets/logo-removebg-preview.png';
 
 import './style.scss'
 import { ImgProfile } from "../../componentes/ImgProfile/ImgProfile";
+import { onValue, ref } from "firebase/database";
+import { database } from "../../services/firebase";
+import { InfoDia } from "../../componentes/InfoDia";
+
+type Dia = {
+    id: string;
+    data: string;
+    horario: string;
+    tipoCulto: string;
+};
+
+type DadosDoFirebase = Record<string, Dia>;
 
 export function Home() {
     const [isSlideBarOpen, setIsSlideBarOpen] = useState(false);
@@ -36,6 +48,17 @@ export function Home() {
         }, 100)
     }
 
+
+    const [data, setData] = useState<DadosDoFirebase>({});
+
+    useEffect(() => {
+        const diasRef = ref(database, 'dias/');
+        onValue(diasRef, (snapshot) => {
+            const dadosDoFirebase = snapshot.val();
+            setData(dadosDoFirebase);
+        });
+    }, []);
+
     return (
         <div className='container-home'>
             <div className="content" >
@@ -65,38 +88,20 @@ export function Home() {
                         <h3>Programações</h3>
                     </div>
 
-                    <div className="content-main">
-                        <div className="div-colum">
-                            <span className="dia-culto">18</span>
-                            <span className="mes-culto">JUN</span>
-                            <span className="barrinha">|</span>
-                        </div>
-                        <div className="div-row-content">
-                            <span>Domingo</span>
-                            <div className="row-content">
-                                <p>Culto Noite</p>
-                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="confirmados" />
-                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="confirmados" />
-                                <p>18:00</p>
-                            </div>
-                        </div>
-                    </div>
+                    {Object.keys(data).map((diaId) => {
+                        const dia = data[diaId];
+                        return (
+                            <InfoDia
+                                key={diaId}
+                                id={diaId}
+                                data={dia.data}
+                                horario={dia.horario}
+                                tipoCulto={dia.tipoCulto}
+                            />
+                        );
+                    })}
 
-                    <div className="content-main">
-                        <div className="div-colum">
-                            <span className="dia-culto">24</span>
-                            <span className="mes-culto">JUN</span>
-                            <span className="barrinha">|</span>
-                        </div>
-                        <div className="div-row-content">
-                            <span>Domingo</span>
-                            <div className="row-content">
-                                <p>Culto Noite</p>
-                                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="confirmados" />
-                                <p>18:00</p>
-                            </div>
-                        </div>
-                    </div>
+
                 </main>
 
 

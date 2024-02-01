@@ -61,51 +61,6 @@
                 margin: 25px 0;
                 font-weight: 500;
             }
-
-            .content-main {
-                display: flex;
-                margin-bottom: 40px;
-                margin-top: 40px;
-
-                .div-colum {
-                    display: flex;
-                    align-items: center;
-                    flex-direction: column;
-
-                    span {
-                        margin: 0 5px;
-                    }
-
-                    .barrinha {
-                        font-weight: 100;
-                        font-size: 70px;
-                    }
-                }
-
-                .div-row-content {
-                    width: 100%;
-
-                    .row-content {
-                        margin-top: 5px;
-                        color: #113583;
-                        background-color: #dce3eb;
-                        padding: 2px 20px;
-                        border-radius: 15px;
-                        width: 100%;
-
-                        p {
-                            font-weight: 500;
-                            margin: 8px 0;
-                        }
-
-                        img {
-                            margin: 0 6px;
-                            width: 35px;
-                            border-radius: 9999px;
-                        }
-                    }
-                }
-            }
         }
 
 

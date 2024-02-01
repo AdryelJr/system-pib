@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react'
-import LogoImg from '../../assets/logo-removebg-preview.png'
-import { createUser } from '../../services/operacoes';
+import LogoImg from '../../../assets/logo-removebg-preview.png'
+import { createUser } from '../../../services/operacoes';
 import './style.scss'
 
 export function AdminAccount() {
