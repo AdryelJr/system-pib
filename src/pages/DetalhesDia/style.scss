@@ -104,10 +104,37 @@
                 }
             }
 
+            .div-avisos {
+                background-color: #d3d3d3;
+                width: 90%;
+                margin-top: 30px;
+                border-radius: 10px;
+
+                .svg {
+                    display: flex;
+                    align-items: center;
+                    margin-left: 15px;
+                }
+
+                p {
+                    margin: 15px 5px;
+                }
+
+                .content-avisos {
+                    background-color: #e7e7e7;
+                    padding: 13px;
+                    display: flex;
+                    min-height: 80px;
+                    border-radius: 0 0 10px 10px;
+                    max-width: 100%;
+                    height: auto;
+                }
+            }
+
             .div-confirmados {
                 background-color: #d3d3d3;
                 width: 90%;
-                margin-top: 40px;
+                margin-top: 30px;
                 border-radius: 10px;
 
                 p {
@@ -133,7 +160,7 @@
             .div-louvores {
                 background-color: #d3d3d3;
                 width: 90%;
-                margin-top: 40px;
+                margin-top: 30px;
                 border-radius: 10px;
 
                 p {
