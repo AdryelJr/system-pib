@@ -1,3 +1,101 @@
-.content-detalhesDia{
-    background-color: #d3d3d3;
+.container-detalhesDia {
+    color: #333;
+    background-color: #F8F8FC;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+
+    .content-detals {
+        width: 420px;
+        max-width: 420px;
+        max-height: 98vh;
+        height: 98vh;
+
+        header {
+            padding: 10px;
+            display: flex;
+
+            svg {
+                width: 60px;
+                background-color: #e6e5e5ac;
+                border-radius: 10px;
+                padding: 0 10px;
+                transition: .2s ease-in-out;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #e3e3e3;
+                }
+            }
+
+            h2 {
+                text-align: center;
+                width: 70%;
+            }
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+
+            .div-informations {
+                width: 85%;
+
+                h3 {
+                    margin: 8px;
+                }
+
+                .child-informations {
+                    position: relative;
+                    background-color: #d3d3d3;
+                    padding: 10px;
+                    border-radius: 10px;
+                    display: flex;
+                    justify-content: space-between;
+                    z-index: 999;
+
+                    span {
+                        display: flex;
+                        align-items: center;
+
+                        svg {
+                            width: 28px;
+                        }
+                    }
+                }
+            }
+
+            .div-confirmation {
+                display: flex;
+                margin-top: -10px;
+                padding: 20px 8px 10px 8px;
+                background-color: #e7e7e7;
+                align-items: center;
+                border-radius: 0 0 10px 10px;
+
+                p {
+                    margin-right: 10px;
+                }
+
+                button {
+                    border-radius: 8px;
+                    padding: 8px 25px;
+                    border: 0;
+                    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+                    margin: 0 10px;
+                }
+
+                .btn1 {
+                    background-color: #dd0000ea;
+                    color: #fff;
+                }
+
+                .btn2 {
+                    background-color: #049f04cf;
+                    color: #fff;
+                }
+            }
+        }
+    }
 }
