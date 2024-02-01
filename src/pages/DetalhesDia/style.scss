@@ -37,7 +37,8 @@
 
         main {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
 
             .div-informations {
                 width: 90%;
@@ -49,7 +50,7 @@
                 .child-informations {
                     position: relative;
                     background-color: #d3d3d3;
-                    padding: 10px;
+                    padding: 10px 15px;
                     border-radius: 10px;
                     display: flex;
                     justify-content: space-between;
@@ -64,36 +65,94 @@
                         }
                     }
                 }
+
+                .div-confirmation {
+                    display: flex;
+                    margin-top: -10px;
+                    padding: 20px 8px 10px 15px;
+                    background-color: #e7e7e7;
+                    align-items: center;
+                    border-radius: 0 0 10px 10px;
+
+                    p {
+                        margin-right: 10px;
+                    }
+
+                    button {
+                        border-radius: 8px;
+                        padding: 8px 25px;
+                        border: 0;
+                        box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+                        margin: 0 10px;
+                        cursor: pointer;
+                        transition: .2s ease-in-out;
+
+                        &:hover {
+                            opacity: .8;
+                        }
+                    }
+
+                    .btn1 {
+                        background-color: #dd0000ea;
+                        color: #fff;
+                    }
+
+                    .btn2 {
+                        background-color: #049f04cf;
+                        color: #fff;
+                    }
+                }
             }
 
-            .div-confirmation {
-                display: flex;
-                margin-top: -10px;
-                padding: 20px 8px 10px 8px;
-                background-color: #e7e7e7;
-                align-items: center;
-                border-radius: 0 0 10px 10px;
+            .div-confirmados {
+                background-color: #d3d3d3;
+                width: 90%;
+                margin-top: 40px;
+                border-radius: 10px;
 
                 p {
-                    margin-right: 10px;
+                    margin: 15px 15px;
                 }
 
-                button {
-                    border-radius: 8px;
-                    padding: 8px 25px;
-                    border: 0;
-                    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
-                    margin: 0 10px;
+                .content-confirmados {
+                    background-color: #e7e7e7;
+                    padding: 13px;
+                    display: flex;
+                    min-height: 80px;
+                    border-radius: 0 0 10px 10px;
+                    max-width: 100%;
+                    height: auto;
+
+                    img {
+                        margin-right: 10px;
+                        max-width: 100%;
+                    }
+                }
+            }
+
+            .div-louvores {
+                background-color: #d3d3d3;
+                width: 90%;
+                margin-top: 40px;
+                border-radius: 10px;
+
+                p {
+                    margin: 15px 15px;
                 }
 
-                .btn1 {
-                    background-color: #dd0000ea;
-                    color: #fff;
-                }
+                .content-louvores {
+                    background-color: #e7e7e7;
+                    padding: 13px;
+                    display: flex;
+                    min-height: 80px;
+                    border-radius: 0 0 10px 10px;
+                    max-width: 100%;
+                    height: auto;
 
-                .btn2 {
-                    background-color: #049f04cf;
-                    color: #fff;
+                    ul {
+                        line-height: 23px;
+                        margin-left: 20px;
+                    }
                 }
             }
         }

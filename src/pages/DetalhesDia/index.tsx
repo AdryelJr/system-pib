@@ -2,6 +2,7 @@ import './style.scss'
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../../componentes/loadingComponent";
 import { useNavigate } from 'react-router-dom';
+import { ImgProfile } from '../../componentes/ImgProfile/ImgProfile';
 
 export function DetalhesDia() {
     const navigate = useNavigate();
@@ -42,6 +43,28 @@ export function DetalhesDia() {
                             <button className='btn2'>Sim</button>
                         </div>
                     </div>
+
+                    <div className='div-confirmados'>
+                        <p>Confirmados</p>
+                        <div className='content-confirmados'>
+                            <ImgProfile />
+                            <ImgProfile />
+                            <ImgProfile />
+                        </div>
+                    </div>
+
+                    <div className='div-louvores'>
+                        <p>Louvores</p>
+                        <div className='content-louvores'>
+                            <ul>
+                                <li>Música 1</li>
+                                <li>Música 2</li>
+                                <li>Música 3</li>
+                                <li>Música 4</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
                 </main>
             </div>
         </div>
