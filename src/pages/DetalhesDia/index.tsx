@@ -13,7 +13,7 @@ export function DetalhesDia() {
 
     const location = useLocation();
     const informacoesDia = location.state?.informacoesDia || {};
-    const { id, data, horario, tipoCulto, diaSemanaFormatado } = informacoesDia;
+    const { id, data, horario, tipoCulto, diaSemanaFormatado } = informacoesDia || {};
 
     useEffect(() => {
         setTimeout(() => {
