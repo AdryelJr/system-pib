@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './style.scss';
 
 export const InfoDia = ({ id, data, horario, tipoCulto }: any) => {
+    const navigate = useNavigate();
     const partesData = data.split('/');
     const dataFormatada = new Date(partesData[2], partesData[1] - 1, partesData[0]);
     const formatter = new Intl.DateTimeFormat("pt-BR", {
@@ -12,18 +13,23 @@ export const InfoDia = ({ id, data, horario, tipoCulto }: any) => {
 
     const newData = formatter.format(dataFormatada);
     const partesFormatadas = newData.split(' ');
-    const diaSemanaFormatado = partesFormatadas[0].charAt(0).toUpperCase() + partesFormatadas[0].slice(1);
+    const diaSemanaFormatado = partesFormatadas[0].charAt(0).toUpperCase() + partesFormatadas[0].slice(1).replace(',', '');
     const diaFormatado = partesFormatadas[1];
     const mesFormatado = partesFormatadas[3].replace('.', '').toUpperCase();
 
-    const informacoesDia = {
-        data: data,
-        horario: horario,
-        tipoCulto: tipoCulto
+    const handleDetalhesClick = () => {
+        const informacoesDia = {
+            data: data,
+            horario: horario,
+            tipoCulto: tipoCulto,
+            diaSemanaFormatado: diaSemanaFormatado
+        };
+
+        navigate(`/detalhes/${id}`, { state: { informacoesDia } });
     };
 
     return (
-        <Link to={{ pathname: `/detalhes/${id}`, state: { informacoesDia } } as any} className="content-infoDia">
+        <div className="content-infoDia" onClick={handleDetalhesClick}>
             <div className="div-colum">
                 <span className="dia-culto">{diaFormatado}</span>
                 <span className="mes-culto">{mesFormatado}</span>
@@ -38,6 +44,6 @@ export const InfoDia = ({ id, data, horario, tipoCulto }: any) => {
                     <p>{horario}</p>
                 </div>
             </div>
-        </Link>
+        </div>
     );
 };

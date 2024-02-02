@@ -17,8 +17,6 @@ export function CriarDia() {
 
     async function handleDados(event: FormEvent) {
         event.preventDefault();
-        console.log(dados)
-
         const diaRef = ref(database, 'dias');
         const newDiaRef = push(diaRef);
 
