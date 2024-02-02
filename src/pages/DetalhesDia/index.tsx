@@ -44,9 +44,9 @@ export function DetalhesDia() {
         const sugestaoRef = ref(database, `dias/${String(id)}/sugestoes`);
         onValue(sugestaoRef, (snapshot) => {
             const dadosDoFirebase = snapshot.val();
-            setSugestoesBanco(dadosDoFirebase);
+            setSugestoesBanco(dadosDoFirebase || {});
         });
-    }, [])
+    }, [id])
 
     return (
         <div className="container-detalhesDia">
