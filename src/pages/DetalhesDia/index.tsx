@@ -5,9 +5,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ImgProfile } from '../../componentes/ImgProfile/ImgProfile';
 import { onValue, push, ref, set } from 'firebase/database';
 import { database } from '../../services/firebase';
+import { useUser } from '../../context/AuthContext';
 
 
 export function DetalhesDia() {
+    const { user } = useUser();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -26,6 +28,20 @@ export function DetalhesDia() {
     }
 
 
+    // CONFIRMAÇÕES ============================================================
+    console.log(user)
+    async function handleConfirm(){
+        const confirmRef = ref(database, `dias${id}/confirmados`);
+        const novaConfirm = push(confirmRef);
+
+        await set(confirmRef, {
+
+        })
+    }
+
+
+
+    // SUGESTAO ================================================================
     const [novaSugestao, setNovaSugestao] = useState('');
     const [sugestoesBanco, setSugestoesBanco] = useState<any>({});
 
@@ -33,15 +49,16 @@ export function DetalhesDia() {
         event.preventDefault();
 
         if (novaSugestao.trim() !== "") {
-            const sugestaoRef = ref(database, `dias/${String(id)}/sugestoes`);
+            const sugestaoRef = ref(database, `dias/${id}/sugestoes`);
             const novaSugestaoRef = push(sugestaoRef);
 
             await set(novaSugestaoRef, novaSugestao);
+            setNovaSugestao('')
         }
     }
 
     useEffect(() => {
-        const sugestaoRef = ref(database, `dias/${String(id)}/sugestoes`);
+        const sugestaoRef = ref(database, `dias/${id}/sugestoes`);
         onValue(sugestaoRef, (snapshot) => {
             const dadosDoFirebase = snapshot.val();
             setSugestoesBanco(dadosDoFirebase || {});

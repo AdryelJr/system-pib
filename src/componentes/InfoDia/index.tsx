@@ -19,6 +19,7 @@ export const InfoDia = ({ id, data, horario, tipoCulto }: any) => {
 
     const handleDetalhesClick = () => {
         const informacoesDia = {
+            id:id,
             data: data,
             horario: horario,
             tipoCulto: tipoCulto,
