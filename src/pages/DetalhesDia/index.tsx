@@ -3,7 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import LoadingSpinner from "../../componentes/loadingComponent";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ImgProfile } from '../../componentes/ImgProfile/ImgProfile';
-import { onValue, push, ref, set } from 'firebase/database';
+import { get, onValue, push, ref, set } from 'firebase/database';
 import { database } from '../../services/firebase';
 import { useUser } from '../../context/AuthContext';
 
@@ -29,15 +29,29 @@ export function DetalhesDia() {
 
 
     // CONFIRMAÇÕES ============================================================
-    console.log(user)
-    async function handleConfirm(){
-        const confirmRef = ref(database, `dias${id}/confirmados`);
+    async function handleConfirm() {
+        const confirmRef = ref(database, `dias/${id}/confirmados`);
         const novaConfirm = push(confirmRef);
 
-        await set(confirmRef, {
-
-        })
+        await set(novaConfirm, user.displayName)
+        console.log("User confirmado")
     }
+
+
+
+
+    // LOUVORES ================================================================
+
+    // COLOCAR FOTO DE PERFIL DA PESSOA QUE ESCOLHEU JUNTO COM O NOME DA MUSICA EM SUGESTOES
+    const [louvores, setLouvores] = useState();
+    useEffect(() => {
+        const louvorRef = ref(database, `dias/${id}/louvores`);
+        onValue(louvorRef, (snapshot) => {
+            const dadosLouvores = snapshot.val();
+            setLouvores(dadosLouvores);
+        })
+    }, [])
+
 
 
 
@@ -65,6 +79,50 @@ export function DetalhesDia() {
         });
     }, [id])
 
+
+
+    // VOTAÇÃO =================================================================
+    async function handleVotacao(sugestaoId: any) {
+        const votosRef = ref(database, `dias/${id}/votos/${sugestaoId}`);
+        const userVoteSnapshot = await get(votosRef);
+        const nameUser = user.displayName;
+
+        if (userVoteSnapshot.exists()) {
+            const votos = userVoteSnapshot.val();
+            if (Object.values(votos).includes(nameUser)) {
+                alert('Somente um voto por música!');
+            } else {
+                const novoVotoRef = push(votosRef);
+                await set(novoVotoRef, nameUser);
+                console.log("Vote recorded successfully");
+
+                const contagemVotos = Object.keys(userVoteSnapshot.val()).length + 1;
+                console.log(contagemVotos)
+                if (contagemVotos === 4) {
+                    moverParaLouvor(sugestaoId);
+                }
+            }
+        } else {
+            const novoVotoRef = push(votosRef);
+            await set(novoVotoRef, nameUser);
+            console.log("Vote recorded successfully");
+
+            const contagemVotos = Object.keys(userVoteSnapshot.val()).length + 1;
+            console.log(contagemVotos)
+            if (contagemVotos === 4) {
+                moverParaLouvor(sugestaoId);
+            }
+        }
+    }
+
+    function moverParaLouvor(sugestaoId: string) {
+        const louvoresRef = ref(database, `dias/${id}/louvores`);
+        const novaLouvorRef = push(louvoresRef);
+        set(novaLouvorRef, sugestoesBanco[sugestaoId]);
+        const sugestaoRef = ref(database, `dias/${id}/sugestoes/${sugestaoId}`);
+        set(sugestaoRef, null);
+    }
+
     return (
         <div className="container-detalhesDia">
             {isLoading && <LoadingSpinner />}
@@ -89,8 +147,8 @@ export function DetalhesDia() {
                         </div>
                         <div className='div-confirmation'>
                             <p>Confirmar Presença</p>
-                            <button className='btn1'>Não</button>
-                            <button className='btn2'>Sim</button>
+                            <button className='btn1' >Não</button>
+                            <button className='btn2' onClick={handleConfirm}>Sim</button>
                         </div>
                     </div>
 
@@ -117,10 +175,13 @@ export function DetalhesDia() {
                         <p>Louvores</p>
                         <div className='content-louvores'>
                             <ul>
-                                <li>Música 1</li>
-                                <li>Música 2</li>
-                                <li>Música 3</li>
-                                <li>Música 4</li>
+                                {louvores && Object.keys(louvores).map((louvorId) => (
+                                    <li key={louvorId}>
+                                        {louvores[louvorId]}
+                                    </li>
+                                ))}
+
+
                             </ul>
                         </div>
                     </div>
@@ -144,7 +205,10 @@ export function DetalhesDia() {
                                 {Object.keys(sugestoesBanco).map((sugestaoId) => {
                                     const sugestaoLista = sugestoesBanco[sugestaoId];
                                     return (
-                                        <li key={sugestaoId}>{sugestaoLista}</li>
+                                        <li
+                                            onClick={() => handleVotacao(sugestaoId)}
+                                            key={sugestaoId}>{sugestaoLista}
+                                        </li>
                                     )
                                 })}
                             </ul>
