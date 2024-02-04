@@ -29,13 +29,24 @@ export function DetalhesDia() {
 
 
     // CONFIRMAÇÕES ============================================================
-    async function handleConfirm() {
+    async function handleConfirmSim() {
+        // const newUserConfirmRef = ref(database, `users/${user.uid}/`)
+
         const confirmRef = ref(database, `dias/${id}/confirmados`);
         const novaConfirm = push(confirmRef);
 
-        await set(novaConfirm, user.displayName)
+        const dadosConfirm = {
+            name: user.displayName,
+            avatar: user.photoURL
+        }
+
+        await set(novaConfirm, dadosConfirm)
         console.log("User confirmado")
     }
+
+    // async function handleCofirm() {
+
+    // }
 
 
 
@@ -148,7 +159,7 @@ export function DetalhesDia() {
                         <div className='div-confirmation'>
                             <p>Confirmar Presença</p>
                             <button className='btn1' >Não</button>
-                            <button className='btn2' onClick={handleConfirm}>Sim</button>
+                            <button className='btn2' onClick={handleConfirmSim}>Sim</button>
                         </div>
                     </div>
 
@@ -180,8 +191,6 @@ export function DetalhesDia() {
                                         {louvores[louvorId]}
                                     </li>
                                 ))}
-
-
                             </ul>
                         </div>
                     </div>

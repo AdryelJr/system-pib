@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { Home } from './pages/Home';
+import { Profile } from './pages/Profile';
 import './styles/global.scss';
 import { AdminAccount } from './pages/Admin/AdminAccount';
 import { UserProvider } from './context/AuthContext';
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/detalhes/:id" element={<DetalhesDia />} />
           <Route path="/admin" element={<AdminAccount />} />
           <Route path="/criardia" element={<CriarDia />} />

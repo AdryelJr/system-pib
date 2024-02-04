@@ -68,6 +68,10 @@ export function Home() {
         }, 1000);
     }, []);
 
+    function handleProfile(){
+        navigate('/profile')
+    }
+
     return (
         <div className='container-home'>
             {isLoading && <LoadingSpinner />}
@@ -115,7 +119,7 @@ export function Home() {
 
                 <section className={`slide-bar ${isSlideBarOpen ? 'slide-bar-open' : ''}`}>
                     <div className={`slide-content ${isSlideContent ? 'slide-content-open' : ''}`}>
-                        <div className="user-profile">
+                        <div onClick={handleProfile} className="user-profile">
                             <ImgProfile />
                             <p>{user?.displayName}</p>
                             <span>{'>'}</span>
