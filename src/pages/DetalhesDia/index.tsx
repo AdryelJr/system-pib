@@ -2,15 +2,21 @@ import './style.scss'
 import { FormEvent, useEffect, useState } from "react";
 import LoadingSpinner from "../../componentes/loadingComponent";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ImgProfile } from '../../componentes/ImgProfile/ImgProfile';
 import { get, onValue, push, ref, set } from 'firebase/database';
 import { database } from '../../services/firebase';
 import { useUser } from '../../context/AuthContext';
 
 
+interface Confirmado {
+    userId: string;
+    avatar?: string;
+    confirmacao: boolean;
+}
+
 export function DetalhesDia() {
     const { user } = useUser();
     const userID = user?.uid ?? 'false';
+    const userAvatar = user?.photoURL ?? 'sem';
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -32,32 +38,58 @@ export function DetalhesDia() {
 
 
 
-
     // CONFIRMAÇÕES ============================================================
-    const [confirmacaoConcluida, setConfirmacaoConcluida] = useState();
+    const [confirmacaoConcluida, setConfirmacaoConcluida] = useState(Boolean);
+    const [mudou, setMudou] = useState(true);
+
+    useEffect(() => {
+        const confirmRef = ref(database, `dias/${id}/infoUser/${userID}`);
+        onValue(confirmRef, (snapshot) => {
+            const dadosConfirm = snapshot.val();
+            if (dadosConfirm && dadosConfirm.confirmacao !== undefined) {
+                setConfirmacaoConcluida(dadosConfirm.confirmacao);
+            }
+        });
+
+    }, [id, userID, userAvatar, confirmacaoConcluida, mudou]);
+
 
     async function handleConfirmSim() {
-        const confirRef = ref(database, `dias/${id}/infoUser/user${userID}`)
+        const confirRef = ref(database, `dias/${id}/infoUser/${userID}`)
         const dadosConfirm = {
-            avatar: user.photoURL,
-            confirmSim: true
+            avatar: userAvatar,
+            confirmacao: true
         }
         await set(confirRef, dadosConfirm)
         console.log('User Confirmado')
-    }           
-
-    async function handleConfirmNao() {
-        console.log('nao')
+        setMudou(!mudou)
     }
 
-    useEffect(() => {
-        const confirmRef = ref(database, `dias/${id}/infoUser/user${userID}`)
-        onValue(confirmRef, (snapshot) => {
-            const dadosConfirm = snapshot.val();
-            console.log(dadosConfirm)
-        })
-    }, [])
+    async function handleConfirmNao() {
+        const confirRef = ref(database, `dias/${id}/infoUser/${userID}`)
+        const dadosConfirm = {
+            avatar: userAvatar,
+            confirmacao: false
+        }
+        await set(confirRef, dadosConfirm)
+        console.log('User Confirmado como NÃO')
+        setMudou(!mudou)
+    }
 
+
+
+
+    // CONFIRMADOS IMG =========================================================
+    const [confirmados, setConfirmados] = useState<Confirmado[]>([]);
+
+    useEffect(() => {
+        const confirmRef = ref(database, `dias/${id}/infoUser`);
+        onValue(confirmRef, (snapshot) => {
+            const dadosConfirmados: Record<string, Confirmado> = snapshot.val();
+            const confirmadosArray = Object.values(dadosConfirmados || {}).filter((user) => user.confirmacao);
+            setConfirmados(confirmadosArray);
+        });
+    }, [id, userID, userAvatar]);
 
 
 
@@ -73,6 +105,8 @@ export function DetalhesDia() {
             setLouvores(dadosLouvores);
         })
     }, [])
+
+
 
 
 
@@ -100,6 +134,8 @@ export function DetalhesDia() {
             setSugestoesBanco(dadosDoFirebase || {});
         });
     }, [id])
+
+
 
 
 
@@ -187,7 +223,16 @@ export function DetalhesDia() {
                     <div className='div-confirmados'>
                         <p>Confirmados</p>
                         <div className='content-confirmados'>
-                            <ImgProfile />
+                            {confirmados.map((confirmado) => (
+                                <div key={confirmado.userId} className='confirmado-item'>
+                                    {confirmado.avatar ? (
+                                        <img src={confirmado.avatar} alt={`Avatar de ${confirmado.userId}`} />
+                                    ) : (
+                                        <img src="https://cdn-icons-png.flaticon.com/512/3106/3106921.png" alt="Avatar padrão" />
+                                    )}
+                                    <p>{confirmado.userId}</p>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
@@ -234,7 +279,7 @@ export function DetalhesDia() {
                     </div>
 
                 </main>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };

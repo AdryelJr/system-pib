@@ -1,4 +1,5 @@
 .container-detalhesDia {
+    transition: all .5s ease-in-out;
     color: #333;
     background-color: #F8F8FC;
     width: 100%;
@@ -98,25 +99,21 @@
                     }
 
                     .btn2 {
-                        background-color: #049f04cf;
+                        background-color: #049f0451;
                         color: #fff;
                     }
                 }
 
                 .confirmacao-concluida {
-                    background-color: red;
                     transition: all .5s ease-in-out;
-                    display: none;
-                }
 
-                .confirmacao-concluida-nao {
                     .btn1 {
-                        background-color: #dd0000c4;
+                        background-color: #dd000068;
                         color: #fff;
                     }
 
                     .btn2 {
-                        background-color: #049f043c;
+                        background-color: #049f04cf;
                         color: #fff;
                     }
                 }
@@ -169,8 +166,13 @@
                     height: auto;
 
                     img {
+                        width: 50px;
+                        border-radius: 9999px;
                         margin-right: 10px;
-                        max-width: 100%;
+
+                        &+& img {
+                            margin-left: 50px;
+                        }
                     }
                 }
             }
