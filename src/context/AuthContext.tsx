@@ -8,7 +8,8 @@ type UserTypeCreate = {
     email: string,
     password: string,
     photoURL?: string,
-    displayName?: string
+    displayName?: string,
+    uid?: string
 }
 
 type UserTypeSignIn = {

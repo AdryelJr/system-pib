@@ -10,6 +10,7 @@ import { useUser } from '../../context/AuthContext';
 
 export function DetalhesDia() {
     const { user } = useUser();
+    const userID = user?.uid ?? 'false';
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -28,25 +29,67 @@ export function DetalhesDia() {
     }
 
 
+
+
+
+
     // CONFIRMAÇÕES ============================================================
     async function handleConfirmSim() {
-        // const newUserConfirmRef = ref(database, `users/${user.uid}/`)
-
-        const confirmRef = ref(database, `dias/${id}/confirmados`);
-        const novaConfirm = push(confirmRef);
-
+        const confirmRef = ref(database, `dias/${id}/informacoesUser/user${userID}`);
         const dadosConfirm = {
             name: user.displayName,
-            avatar: user.photoURL
+            avatar: user.photoURL,
+            confirmado: true,
+            presecaNao: false
         }
-
-        await set(novaConfirm, dadosConfirm)
+        await set(confirmRef, dadosConfirm)
+        setConfirmacaoConcluida(true)
         console.log("User confirmado")
     }
 
-    // async function handleCofirm() {
+    async function handleConfirmNao() {
+        const confirmRef = ref(database, `dias/${id}/informacoesUser/user${userID}`);
+        const dadosConfirm = {
+            name: user.displayName,
+            avatar: user.photoURL,
+            confirmado: false,
+            presecaNao: true
+        }
+        await set(confirmRef, dadosConfirm)
+        setConfirmacaoConcluida(false)
+        setPresencaNao(true)
+        console.log("User confirmado")
+    }
 
-    // }
+    const [confirmacaoConcluida, setConfirmacaoConcluida] = useState<any>();
+    const [presecaNao, setPresencaNao] = useState<any>();
+    useEffect(() => {
+        const confirmacaoConcluidaRef = ref(database, `dias/${id}/informacoesUser/user${userID}`);
+
+        const handleSnapshot = (snapshot: any) => {
+            const dadosConfirm = snapshot.val();
+            if (dadosConfirm) {
+                localStorage.setItem('dadosConfirmConfirmado', dadosConfirm.confirmado);
+                localStorage.setItem('dadosPresencaNao', dadosConfirm.presecaNao);
+            }
+        };
+        const unsubscribe = onValue(confirmacaoConcluidaRef, handleSnapshot);
+        return () => {
+            unsubscribe();
+        };
+    }, [database, id, userID]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const dadosConfirmConfirmado = localStorage.getItem('dadosConfirmConfirmado');
+            const dadosPresencaNao = localStorage.getItem('dadosPresencaNao');
+            setConfirmacaoConcluida(dadosConfirmConfirmado === 'true');
+            setConfirmacaoConcluida(dadosPresencaNao === 'true');
+        };
+        fetchData();
+    }, []);
+
+
 
 
 
@@ -156,9 +199,9 @@ export function DetalhesDia() {
                                 &nbsp;<p>{data}</p>
                             </span>
                         </div>
-                        <div className='div-confirmation'>
+                        <div className={`div-confirmation ${confirmacaoConcluida || presecaNao ? 'confirmacao-concluida' : ''}`}>
                             <p>Confirmar Presença</p>
-                            <button className='btn1' >Não</button>
+                            <button className='btn1' onClick={handleConfirmNao}>Não</button>
                             <button className='btn2' onClick={handleConfirmSim}>Sim</button>
                         </div>
                     </div>
@@ -176,8 +219,6 @@ export function DetalhesDia() {
                     <div className='div-confirmados'>
                         <p>Confirmados</p>
                         <div className='content-confirmados'>
-                            <ImgProfile />
-                            <ImgProfile />
                             <ImgProfile />
                         </div>
                     </div>

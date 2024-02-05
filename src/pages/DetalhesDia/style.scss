@@ -102,6 +102,24 @@
                         color: #fff;
                     }
                 }
+
+                .confirmacao-concluida {
+                    background-color: red;
+                    transition: all .5s ease-in-out;
+                    display: none;
+                }
+
+                .confirmacao-concluida-nao {
+                    .btn1 {
+                        background-color: #dd0000c4;
+                        color: #fff;
+                    }
+
+                    .btn2 {
+                        background-color: #049f043c;
+                        color: #fff;
+                    }
+                }
             }
 
             .div-avisos {

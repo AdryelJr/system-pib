@@ -3,13 +3,15 @@ import { auth } from "../../services/firebase";
 
 export function Profile() {
     const newPhotoURL: string = 'https://pics.craiyon.com/2023-06-27/287f2a60c2e74386b5a89c517eb527dc.webp';
+    const newName: string = 'Adryel Santos';
 
     function handleSubmit() {
         const currentUser: User | null = auth.currentUser;
 
         if (currentUser) {
             updateProfile(currentUser, {
-                photoURL: newPhotoURL
+                photoURL: newPhotoURL,
+                displayName: newName
             })
                 .then(() => {
                     console.log('Atualização do perfil bem-sucedida');
