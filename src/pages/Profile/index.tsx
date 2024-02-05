@@ -3,7 +3,8 @@ import './style.scss'
 import { useEffect, useState } from 'react';
 import LoadingSpinner from '../../componentes/loadingComponent';
 import { useUser } from '../../context/AuthContext';
-
+import { updateProfile, User } from "firebase/auth";
+import { auth } from '../../services/firebase';
 
 export function Profile() {
     const navigate = useNavigate();
@@ -24,6 +25,43 @@ export function Profile() {
         navigate('/home')
     }
 
+
+    const ImageUploader = () => {
+        const [newImageURL, setNewImageURL] = useState<any>('');
+        const currentUser: User | null = auth.currentUser;
+        const handleFile = async (event: any) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (e && e.target) {
+                        const imageUrl = e.target.result as string;
+                        setNewImageURL(imageUrl);
+                        if (currentUser) {
+                            updateProfile(currentUser, {
+                                photoURL: imageUrl
+                            }).then(() => {
+                                console.log('Atualização da foto de perfil bem-sucedida');
+                            }).catch((error) => {
+                                console.log(error);
+                            });
+                        }
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        console.log(newImageURL);
+
+        return (
+            <div className='div-img'>
+                <img src={newImageURL || userPhotoURL} alt={userName} />
+                <input type="file" onChange={handleFile} />
+            </div>
+        );
+    };
+
+
     return (
         <div className="container-profile">
             {isLoading && <LoadingSpinner />}
@@ -35,13 +73,10 @@ export function Profile() {
                 <div className='div-bg'>
                 </div>
                 <main>
-                    <div className='div-img'>
-                        <img src={userPhotoURL} alt={userName} />
-                        <input type="file" placeholder='+' />
-                    </div>
-                    <h2>Adryel Júnio</h2>
+                    <ImageUploader />
+                    <h2>{userName}</h2>
                 </main>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
