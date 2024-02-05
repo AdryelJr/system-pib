@@ -1,0 +1,98 @@
+// style.scss
+
+$primary-color: #333;
+$background-color: #F8F8FC;
+$image-url: 'https://i.pinimg.com/736x/6c/8a/9b/6c8a9bee04c2de7ab34b44731d7fbe21.jpg';
+
+.container-profile {
+    transition: all .5s ease-in-out;
+    color: $primary-color;
+    background-color: $background-color;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+
+    .div-bg {
+        top: 0;
+        width: 420px;
+        position: absolute;
+        background-image: url($image-url);
+        background-size: cover;
+        background-position: center;
+        height: 150px;
+    }
+
+    .content-profile {
+        position: relative;
+        width: 420px;
+        max-width: 420px;
+        max-height: 98vh;
+        height: 98vh;
+
+        header {
+            padding: 10px;
+            display: flex;
+
+            svg {
+                margin-top: 10px;
+                z-index: 1;
+                width: 60px;
+                background-color: #e6e5e5ac;
+                border-radius: 10px;
+                padding: 0 10px;
+                transition: .2s ease-in-out;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #e3e3e3;
+                }
+            }
+
+            h2 {
+                text-align: center;
+                width: 70%;
+            }
+        }
+
+        main {
+            border-top: 1px solid #ccc;
+            background-color: #e6e5e5ac;
+            position: absolute;
+            top: 150px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+
+            .div-img {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                img {
+                    width: 110px;
+                    border-radius: 999px;
+                    position: absolute;
+                    top: -60px;
+                }
+
+                input[type="file"] {
+                    margin: auto;
+                    opacity: 0;
+                    position: absolute;
+                    top: -80%;
+                    border-radius: 999px;
+                    width: 100px;
+                    height: 100px;
+                    cursor: pointer;
+                }
+            }
+
+            h2 {
+                margin-top: 40px;
+                margin-bottom: 20px;
+                color: #333;
+            }
+        }
+    }
+}
