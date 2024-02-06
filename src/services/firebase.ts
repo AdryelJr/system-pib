@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBimBlK1fd6hHJUU_oSSJVyFO_ywO0X9PY",
@@ -17,5 +18,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const database = getDatabase();
+const storage = getStorage(app, "gs://my-custom-bucket");
 
-export { app, db, auth, database };
+export { app, db, auth, database, storage };
