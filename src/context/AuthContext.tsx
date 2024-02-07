@@ -56,8 +56,25 @@ export function UserProvider(props: UserProviderProps) {
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorCode)
-                console.log(errorMessage)
+                let alertMessage = '';
+
+                switch (errorCode) {
+                    case 'auth/user-not-found':
+                        alertMessage = 'Usuário não encontrado.';
+                        break;
+                    case 'auth/invalid-credential':
+                        alertMessage = 'Email ou Senha incorreta.';
+                        break;
+                    case 'auth/invalid-email':
+                        alertMessage = 'Endereço de e-mail inválido.';
+                        break;
+                    default:
+                        alertMessage = 'Ocorreu um erro ao fazer login. Por favor, tente novamente mais tarde.';
+                        break;
+                }
+                alert(alertMessage);
+                console.log(errorCode);
+                console.log(errorMessage);
             });
     }
 

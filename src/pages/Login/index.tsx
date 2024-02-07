@@ -1,4 +1,3 @@
-
 import { FormEvent, useState } from 'react'
 import LogoImg from '../../assets/logo-removebg-preview.png'
 import './style.scss'
@@ -6,18 +5,30 @@ import { useUser } from '../../context/AuthContext';
 
 export function Login() {
     const { signIn } = useUser();
-    const [ email, setEmail ] = useState('');
-    const [ password, setPassword ] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
 
-    function handleSignInForm(event: FormEvent) {
+    async function handleSignInForm(event: FormEvent) {
         event.preventDefault();
 
         const userLogin = {
             email: email,
             password: password
         }
-        signIn(userLogin);
+
+        setLoading(true); // Define o estado de carregamento como verdadeiro durante o login
+
+        try {
+            await signIn(userLogin);
+        } catch (error) {
+            console.error(error);
+            // Lidar com erros, se necessário
+        } finally {
+            setLoading(false); // Define o estado de carregamento como falso após o término do login
+        }
     }
+
     return (
         <div className='container-login'>
             <div className='content'>
@@ -37,16 +48,18 @@ export function Login() {
                         <input
                             type="email"
                             placeholder='Email'
-                            onChange={(e) => (setEmail(e.target.value))}
+                            onChange={(e) => setEmail(e.target.value)}
                             value={email}
                         />
                         <input
                             type="password"
                             placeholder='Senha'
-                            onChange={(e) => (setPassword(e.target.value))}
+                            onChange={(e) => setPassword(e.target.value)}
                             value={password}
                         />
-                        <button type='submit'>Entrar</button>
+                        <button type='submit' disabled={loading}>
+                            {loading ? "Carregando..." : "Entrar"}
+                        </button>
                     </form>
                 </div>
             </div>

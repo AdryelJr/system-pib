@@ -2,7 +2,7 @@ import './style.scss'
 import { FormEvent, useEffect, useState } from "react";
 import LoadingSpinner from "../../componentes/loadingComponent";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { get, onValue, push, ref, set } from 'firebase/database';
+import { onValue, push, ref, set } from 'firebase/database';
 import { database } from '../../services/firebase';
 import { useUser } from '../../context/AuthContext';
 
@@ -13,10 +13,19 @@ interface Confirmado {
     confirmacao: boolean;
 }
 
+type Lov = {
+    id: string;
+    texto: string;
+    userVoted: any;
+}
+
+type DadosDoFirbase = Record<string, Lov>;
+
 export function DetalhesDia() {
     const { user } = useUser();
     const userID = user?.uid ?? 'false';
     const userAvatar = user?.photoURL ?? 'sem';
+    const userName = user?.displayName ?? 'sem';
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -95,16 +104,16 @@ export function DetalhesDia() {
 
 
     // LOUVORES ================================================================
+    const [louvores, setLouvores] = useState<DadosDoFirbase>({});
 
-    // COLOCAR FOTO DE PERFIL DA PESSOA QUE ESCOLHEU JUNTO COM O NOME DA MUSICA EM SUGESTOES
-    const [louvores, setLouvores] = useState();
     useEffect(() => {
         const louvorRef = ref(database, `dias/${id}/louvores`);
         onValue(louvorRef, (snapshot) => {
             const dadosLouvores = snapshot.val();
             setLouvores(dadosLouvores);
-        })
-    }, [])
+        });
+    }, []);
+
 
 
 
@@ -122,7 +131,7 @@ export function DetalhesDia() {
             const sugestaoRef = ref(database, `dias/${id}/sugestoes`);
             const novaSugestaoRef = push(sugestaoRef);
 
-            await set(novaSugestaoRef, novaSugestao);
+            await set(novaSugestaoRef, { texto: novaSugestao });
             setNovaSugestao('')
         }
     }
@@ -140,46 +149,66 @@ export function DetalhesDia() {
 
 
     // VOTAÇÃO =================================================================
-    async function handleVotacao(sugestaoId: any) {
-        const votosRef = ref(database, `dias/${id}/votos/${sugestaoId}`);
-        const userVoteSnapshot = await get(votosRef);
-        const nameUser = user.displayName;
-
-        if (userVoteSnapshot.exists()) {
-            const votos = userVoteSnapshot.val();
-            if (Object.values(votos).includes(nameUser)) {
-                alert('Somente um voto por música!');
-            } else {
-                const novoVotoRef = push(votosRef);
-                await set(novoVotoRef, nameUser);
-                console.log("Vote recorded successfully");
-
-                const contagemVotos = Object.keys(userVoteSnapshot.val()).length + 1;
-                console.log(contagemVotos)
-                if (contagemVotos === 4) {
-                    moverParaLouvor(sugestaoId);
+    async function handleVotacao(sugestaoId: any, isChecked: boolean) {
+        const votosRef = ref(database, `dias/${id}/sugestoes/${sugestaoId}/texto`);
+        if (isChecked) {
+            console.log(sugestaoId)
+            onValue(votosRef, (snapshot) => {
+                const sugestaoName = snapshot.val();
+                if (!sugestaoName.moved) {
+                    movendoMusica(sugestaoId)
                 }
-            }
-        } else {
-            const novoVotoRef = push(votosRef);
-            await set(novoVotoRef, nameUser);
-            console.log("Vote recorded successfully");
-
-            const contagemVotos = Object.keys(userVoteSnapshot.val()).length + 1;
-            console.log(contagemVotos)
-            if (contagemVotos === 4) {
-                moverParaLouvor(sugestaoId);
-            }
+            });
         }
     }
 
-    function moverParaLouvor(sugestaoId: string) {
+    async function movendoMusica(sugestaoId: any) {
         const louvoresRef = ref(database, `dias/${id}/louvores`);
         const novaLouvorRef = push(louvoresRef);
-        set(novaLouvorRef, sugestoesBanco[sugestaoId]);
+        const musicaSug = sugestoesBanco[sugestaoId].texto
+        const votando = {
+            texto: musicaSug,
+            votos: userName
+        }
+        await set(novaLouvorRef, votando);
+
         const sugestaoRef = ref(database, `dias/${id}/sugestoes/${sugestaoId}`);
-        set(sugestaoRef, null);
+        await set(sugestaoRef, null);
     }
+
+
+    // -------------------------------------------------------------------------
+    async function handleVotacaoLouvores(louvorId: any, isChecked: boolean) {
+        const louvorRef = ref(database, `dias/${id}/louvores/${louvorId}/votos/${userID}`);
+
+        if (isChecked) {
+            await set(louvorRef, true);
+        } else {
+            await set(louvorRef, null);
+        }
+    }
+
+    useEffect(() => {
+        const louvorRef = ref(database, `dias/${id}/louvores`);
+        onValue(louvorRef, (snapshot) => {
+            const louvoresData: Record<string, any> = snapshot.val(); // Definindo o tipo explicitamente como Record<string, any>
+            // Verifica se o usuário votou em cada louvor e atualiza o estado local
+            const louvoresWithUserVote = Object.keys(louvoresData).reduce((acc, louvorId) => {
+                const userVotedRef = ref(database, `dias/${id}/louvores/${louvorId}/votos/${userID}`);
+                onValue(userVotedRef, (userVoteSnapshot) => {
+                    const userVoted = !!userVoteSnapshot.val();
+                    acc[louvorId] = { ...louvoresData[louvorId], userVoted };
+                    setLouvores({ ...louvoresData, [louvorId]: { ...louvoresData[louvorId], userVoted } });
+                });
+                return acc;
+            }, {} as Record<string, any>); // Definindo o tipo de acc explicitamente como Record<string, any>
+            setLouvores(louvoresWithUserVote);
+        });
+    }, [id, userID]);
+
+
+
+
 
     return (
         <div className="container-detalhesDia">
@@ -239,13 +268,24 @@ export function DetalhesDia() {
                     <div className='div-louvores'>
                         <p>Louvores</p>
                         <div className='content-louvores'>
-                            <ul>
-                                {louvores && Object.keys(louvores).map((louvorId) => (
-                                    <li key={louvorId}>
-                                        {louvores[louvorId]}
-                                    </li>
-                                ))}
-                            </ul>
+                            <ol>
+                                {Object.keys(louvores).map((louvorId: any) => {
+                                    const louvorLista = louvores[louvorId];
+                                    return (
+                                        <li
+                                            key={louvorId}
+                                            id={louvorId}
+                                        >
+                                            {louvorLista.texto}
+                                            <input
+                                                type="checkbox"
+                                                checked={louvorLista.userVoted}
+                                                onChange={(e) => handleVotacaoLouvores(louvorId, e.target.checked)}
+                                            />
+                                        </li>
+                                    )
+                                })}
+                            </ol>
                         </div>
                     </div>
 
@@ -269,8 +309,11 @@ export function DetalhesDia() {
                                     const sugestaoLista = sugestoesBanco[sugestaoId];
                                     return (
                                         <li
-                                            onClick={() => handleVotacao(sugestaoId)}
-                                            key={sugestaoId}>{sugestaoLista}
+                                            key={sugestaoId}>{sugestaoLista.texto}
+                                            <input
+                                                type="checkbox"
+                                                onChange={(e) => handleVotacao(sugestaoId, e.target.checked)}
+                                            />
                                         </li>
                                     )
                                 })}
