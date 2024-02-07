@@ -2,7 +2,7 @@ import './style.scss'
 import { FormEvent, useEffect, useState } from "react";
 import LoadingSpinner from "../../componentes/loadingComponent";
 import { useLocation, useNavigate } from 'react-router-dom';
-import { onValue, push, ref, set } from 'firebase/database';
+import { get, onValue, push, ref, remove, set } from 'firebase/database';
 import { database } from '../../services/firebase';
 import { useUser } from '../../context/AuthContext';
 
@@ -25,7 +25,6 @@ export function DetalhesDia() {
     const { user } = useUser();
     const userID = user?.uid ?? 'false';
     const userAvatar = user?.photoURL ?? 'sem';
-    const userName = user?.displayName ?? 'sem';
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -163,18 +162,24 @@ export function DetalhesDia() {
     }
 
     async function movendoMusica(sugestaoId: any) {
-        const louvoresRef = ref(database, `dias/${id}/louvores`);
-        const novaLouvorRef = push(louvoresRef);
-        const musicaSug = sugestoesBanco[sugestaoId].texto
-        const votando = {
-            texto: musicaSug,
-            votos: userName
-        }
-        await set(novaLouvorRef, votando);
-
         const sugestaoRef = ref(database, `dias/${id}/sugestoes/${sugestaoId}`);
-        await set(sugestaoRef, null);
+        const sugestaoSnapshot = await get(sugestaoRef);
+        const sugestaoData = sugestaoSnapshot.val();
+        if (sugestaoData) {
+            const louvoresRef = ref(database, `dias/${id}/louvores`);
+            const novaLouvorRef = push(louvoresRef);
+            const votando = {
+                texto: sugestaoData.texto,
+                votos: {
+                    [userID]: true
+                }
+            }
+            await set(novaLouvorRef, votando);
+
+            await remove(sugestaoRef);
+        }
     }
+
 
 
     // -------------------------------------------------------------------------
@@ -191,8 +196,7 @@ export function DetalhesDia() {
     useEffect(() => {
         const louvorRef = ref(database, `dias/${id}/louvores`);
         onValue(louvorRef, (snapshot) => {
-            const louvoresData: Record<string, any> = snapshot.val(); // Definindo o tipo explicitamente como Record<string, any>
-            // Verifica se o usuário votou em cada louvor e atualiza o estado local
+            const louvoresData: Record<string, any> = snapshot.val();
             const louvoresWithUserVote = Object.keys(louvoresData).reduce((acc, louvorId) => {
                 const userVotedRef = ref(database, `dias/${id}/louvores/${louvorId}/votos/${userID}`);
                 onValue(userVotedRef, (userVoteSnapshot) => {
@@ -201,10 +205,32 @@ export function DetalhesDia() {
                     setLouvores({ ...louvoresData, [louvorId]: { ...louvoresData[louvorId], userVoted } });
                 });
                 return acc;
-            }, {} as Record<string, any>); // Definindo o tipo de acc explicitamente como Record<string, any>
+
+            }, {} as Record<string, any>);
             setLouvores(louvoresWithUserVote);
         });
+
     }, [id, userID]);
+
+
+    const [numeroVotos, setNumeroVotos] = useState<any>();
+    useEffect(() => {
+        const louvorRef = ref(database, `dias/${id}/louvores`);
+        onValue(louvorRef, (snapshot) => {
+            const louvoresData: Record<string, any> = snapshot.val();
+            const louvoresWithVoteCount: Record<string, number> = {};
+
+            Object.keys(louvoresData).forEach((louvorId) => {
+                const votosRef = ref(database, `dias/${id}/louvores/${louvorId}/votos`);
+                onValue(votosRef, (votosSnapshot) => {
+                    const votosData: Record<string, any> = votosSnapshot.val() || {};
+                    const votosLength = Object.keys(votosData).length;
+                    louvoresWithVoteCount[louvorId] = votosLength;
+                    setNumeroVotos(louvoresWithVoteCount)
+                });
+            });
+        });
+    }, [id]);
 
 
 
@@ -268,14 +294,15 @@ export function DetalhesDia() {
                     <div className='div-louvores'>
                         <p>Louvores</p>
                         <div className='content-louvores'>
-                            <ol>
+                            <ul>
                                 {Object.keys(louvores).map((louvorId: any) => {
                                     const louvorLista = louvores[louvorId];
+                                    const votos = numeroVotos[louvorId];
                                     return (
                                         <li
                                             key={louvorId}
                                             id={louvorId}
-                                        >
+                                        >   {votos}
                                             {louvorLista.texto}
                                             <input
                                                 type="checkbox"
@@ -285,7 +312,7 @@ export function DetalhesDia() {
                                         </li>
                                     )
                                 })}
-                            </ol>
+                            </ul>
                         </div>
                     </div>
 
@@ -320,7 +347,6 @@ export function DetalhesDia() {
                             </ul>
                         </div>
                     </div>
-
                 </main>
             </div >
         </div >
