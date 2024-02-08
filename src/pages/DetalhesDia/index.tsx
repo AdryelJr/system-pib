@@ -390,24 +390,26 @@ export function DetalhesDia() {
                             <ul>
                                 <div>
                                     {louvores && Object.keys(louvores).length > 0 ? (
-                                        Object.keys(louvores).map((louvorId: any) => {
-                                            const louvorLista = louvores[louvorId];
-                                            const votos = numeroVotos[louvorId];
-                                            const isCreator = louvorLista.criador === userId;
-                                            return (
-                                                <li key={louvorId} id={louvorId}>
-                                                    {votos} {louvorLista.texto}
-                                                    {isCreator && (
-                                                        <button onClick={() => handleExcluirLouvor(louvorId)}>Excluir</button> // Botão de exclusão aparece apenas se o usuário for o criador
-                                                    )}
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={louvorLista.userVoted}
-                                                        onChange={(e) => handleVotacaoLouvores(louvorId, e.target.checked)}
-                                                    />
-                                                </li>
-                                            );
-                                        })
+                                        Object.keys(louvores)
+                                            .sort((a, b) => numeroVotos[b] - numeroVotos[a]) // Ordena as chaves pela quantidade de votos
+                                            .map((louvorId: any) => {
+                                                const louvorLista = louvores[louvorId];
+                                                const votos = numeroVotos[louvorId];
+                                                const isCreator = louvorLista.criador === userId;
+                                                return (
+                                                    <li key={louvorId} id={louvorId}>
+                                                        {votos} {louvorLista.texto}
+                                                        {isCreator && (
+                                                            <button onClick={() => handleExcluirLouvor(louvorId)}>Excluir</button>
+                                                        )}
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={louvorLista.userVoted}
+                                                            onChange={(e) => handleVotacaoLouvores(louvorId, e.target.checked)}
+                                                        />
+                                                    </li>
+                                                );
+                                            })
                                     ) : (
                                         <p>Nenhuma música adicionada</p>
                                     )}
