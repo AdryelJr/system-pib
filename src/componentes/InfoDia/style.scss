@@ -31,8 +31,8 @@
             background-color: #dce3eb;
             padding: 2px 20px;
             border-radius: 15px;
-            width: 100%;
-
+            min-width: 100%;
+            overflow: hidden;
             p {
                 font-weight: 500;
                 margin: 8px 0;
@@ -41,7 +41,13 @@
             img {
                 margin: 0 6px;
                 width: 35px;
+                height: 35px;
+                object-fit: cover;
                 border-radius: 9999px;
+            }
+
+            .ninguem-confirmardo{
+                margin: 18px 0;
             }
         }
     }

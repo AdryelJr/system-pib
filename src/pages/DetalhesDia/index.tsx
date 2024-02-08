@@ -44,6 +44,36 @@ export function DetalhesDia() {
     }
 
 
+    async function handleExcluirLouvor(louvorId: string) {
+        try {
+            const louvorRef = ref(database, `dias/${id}/louvores/${louvorId}`);
+            await remove(louvorRef);
+            setLouvores((prevLouvores) => {
+                const updatedLouvores = { ...prevLouvores };
+                delete updatedLouvores[louvorId];
+                return updatedLouvores;
+            });
+            console.log('Louvor excluído com sucesso!');
+        } catch (error) {
+            console.error('Erro ao excluir o louvor:', error);
+        }
+    }
+
+    async function handleExcluirAviso(avisoId: string) {
+        try {
+            const avisoRef = ref(database, `dias/${id}/avisos/${avisoId}`);
+            await remove(avisoRef);
+            console.log('Aviso excluído com sucesso!');
+            // Atualizar o estado dos avisos após a exclusão
+            const novosAvisos = { ...avisos };
+            delete novosAvisos[avisoId];
+            setAvisos(novosAvisos);
+        } catch (error) {
+            console.error('Erro ao excluir o aviso:', error);
+        }
+    }
+
+
 
 
 
@@ -94,20 +124,38 @@ export function DetalhesDia() {
         console.log(userId)
     }, [user]);
 
-    async function handleExcluirLouvor(louvorId: string) {
-        try {
-            const louvorRef = ref(database, `dias/${id}/louvores/${louvorId}`);
-            await remove(louvorRef);
-            setLouvores((prevLouvores) => {
-                const updatedLouvores = { ...prevLouvores };
-                delete updatedLouvores[louvorId];
-                return updatedLouvores;
-            });
-            console.log('Louvor excluído com sucesso!');
-        } catch (error) {
-            console.error('Erro ao excluir o louvor:', error);
+
+
+
+
+
+    // AVISOS ==================================================================
+    const [avisos, setAvisos] = useState<any>({});
+    const [newAviso, setNewAviso] = useState<any>('')
+
+    async function handleAvisos(event: FormEvent) {
+        event.preventDefault();
+
+        if (newAviso.trim() !== "") {
+            const avisosRef = ref(database, `dias/${id}/avisos`);
+            const novoAviso = push(avisosRef);
+            const avisoCriado = {
+                criador: userId,
+                texto: newAviso
+            }
+            await set(novoAviso, avisoCriado);
+            setNewAviso('')
         }
     }
+
+    useEffect(() => {
+        const avisosRef = ref(database, `dias/${id}/avisos`);
+        onValue(avisosRef, (snapshot) => {
+            const dadosDoFirebase = snapshot.val();
+            setAvisos(dadosDoFirebase || {});
+        });
+    }, [id])
+
 
 
 
@@ -291,9 +339,32 @@ export function DetalhesDia() {
                         <div className='svg'>
                             <svg height="25px" width="25px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xmlSpace="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> </style> <g> <path d="M256.007,357.113c-16.784,0-30.411,13.613-30.411,30.397c0,16.791,13.627,30.405,30.411,30.405 s30.397-13.614,30.397-30.405C286.405,370.726,272.792,357.113,256.007,357.113z"></path> <path d="M505.097,407.119L300.769,53.209c-9.203-15.944-26.356-25.847-44.777-25.847 c-18.407,0-35.544,9.904-44.747,25.847L6.902,407.104c-9.203,15.943-9.203,35.751,0,51.694c9.204,15.943,26.356,25.84,44.763,25.84 h408.67c18.406,0,35.559-9.897,44.762-25.84C514.301,442.855,514.301,423.047,505.097,407.119z M464.465,432.405 c-2.95,5.103-8.444,8.266-14.35,8.266H61.878c-5.892,0-11.394-3.163-14.329-8.281c-2.964-5.11-2.979-11.445-0.014-16.548 l194.122-336.24c2.943-5.103,8.436-8.274,14.35-8.274c5.9,0,11.386,3.171,14.336,8.282l194.122,336.226 C467.415,420.945,467.415,427.295,464.465,432.405z"></path> <path d="M256.007,152.719c-16.784,0-30.411,13.613-30.411,30.405l11.68,137.487c0,10.346,8.378,18.724,18.731,18.724 c10.338,0,18.731-8.378,18.731-18.724l11.666-137.487C286.405,166.331,272.792,152.719,256.007,152.719z"></path> </g> </g></svg>
                             <p> Avisos</p>
+                            <form onSubmit={handleAvisos}>
+                                <input
+                                    type="text"
+                                    onChange={(e) => (setNewAviso(e.target.value))}
+                                    value={newAviso}
+                                />
+                                <button type='submit'>
+                                    Enviar
+                                </button>
+                            </form>
                         </div>
                         <div className='content-avisos'>
-                            <p>Horário do ensáio mudou! 17:00!!!</p>
+                            <ul>
+                                {Object.keys(avisos).map((avisoId): any => {
+                                    const avisoLista = avisos[avisoId];
+                                    const isCreator = avisoLista.criador === userId;
+                                    return (
+                                        <li key={avisoId} className="aviso-item">
+                                            {avisoLista.texto}
+                                            {isCreator && (
+                                                <button onClick={() => handleExcluirAviso(avisoId)}>Excluir</button>
+                                            )}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
                         </div>
                     </div>
 

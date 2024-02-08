@@ -135,6 +135,35 @@
                     margin: 15px 5px;
                 }
 
+                input {
+                    padding: 6px 15px;
+                    margin: 0 10px;
+                    border: 0;
+                    border-radius: 8px;
+                    border: 1px solid #ccc;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    transition: box-shadow 0.3s ease;
+
+                    &:focus {
+                        outline: 1px solid #333;
+                    }
+                }
+
+                button {
+                    background-color: #333;
+                    color: white;
+                    padding: 6px 15px;
+                    border-radius: 8px;
+                    border: 0;
+                    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+                    cursor: pointer;
+                    transition: 0.2s ease-in-out;
+
+                    &:hover {
+                        background-color: #33333390;
+                    }
+                }
+
                 .content-avisos {
                     background-color: #e7e7e7;
                     padding: 13px;
@@ -143,6 +172,25 @@
                     border-radius: 0 0 10px 10px;
                     max-width: 100%;
                     height: auto;
+
+                    ul {
+                        margin-left: 15px;
+
+                        li {
+                            font-weight: bold;
+                            margin: 10px 0;
+                            color: #a38b04;
+
+                            button {
+                                background-color: #ff4d4f;
+                                padding: 2px 2px;
+                                margin: 0 15px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                border: none;
+                            }
+                        }
+                    }
                 }
             }
 
