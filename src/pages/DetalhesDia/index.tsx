@@ -17,6 +17,7 @@ type Lov = {
     id: string;
     texto: string;
     userVoted: any;
+    criador: any;
 }
 
 type DadosDoFirbase = Record<string, Lov>;
@@ -84,6 +85,29 @@ export function DetalhesDia() {
         setMudou(!mudou)
     }
 
+    const [userId, setUserId] = useState('');
+
+    useEffect(() => {
+        if (user) {
+            setUserId(userID);
+        }
+        console.log(userId)
+    }, [user]);
+
+    async function handleExcluirLouvor(louvorId: string) {
+        try {
+            const louvorRef = ref(database, `dias/${id}/louvores/${louvorId}`);
+            await remove(louvorRef);
+            setLouvores((prevLouvores) => {
+                const updatedLouvores = { ...prevLouvores };
+                delete updatedLouvores[louvorId];
+                return updatedLouvores;
+            });
+            console.log('Louvor excluído com sucesso!');
+        } catch (error) {
+            console.error('Erro ao excluir o louvor:', error);
+        }
+    }
 
 
 
@@ -170,6 +194,7 @@ export function DetalhesDia() {
             const novaLouvorRef = push(louvoresRef);
             const votando = {
                 texto: sugestaoData.texto,
+                criador: userId,
                 votos: {
                     [userID]: true
                 }
@@ -233,9 +258,6 @@ export function DetalhesDia() {
     }, [id]);
 
 
-
-
-
     return (
         <div className="container-detalhesDia">
             {isLoading && <LoadingSpinner />}
@@ -295,23 +317,30 @@ export function DetalhesDia() {
                         <p>Louvores</p>
                         <div className='content-louvores'>
                             <ul>
-                                {Object.keys(louvores).map((louvorId: any) => {
-                                    const louvorLista = louvores[louvorId];
-                                    const votos = numeroVotos[louvorId];
-                                    return (
-                                        <li
-                                            key={louvorId}
-                                            id={louvorId}
-                                        >   {votos}
-                                            {louvorLista.texto}
-                                            <input
-                                                type="checkbox"
-                                                checked={louvorLista.userVoted}
-                                                onChange={(e) => handleVotacaoLouvores(louvorId, e.target.checked)}
-                                            />
-                                        </li>
-                                    )
-                                })}
+                                <div>
+                                    {louvores && Object.keys(louvores).length > 0 ? (
+                                        Object.keys(louvores).map((louvorId: any) => {
+                                            const louvorLista = louvores[louvorId];
+                                            const votos = numeroVotos[louvorId];
+                                            const isCreator = louvorLista.criador === userId;
+                                            return (
+                                                <li key={louvorId} id={louvorId}>
+                                                    {votos} {louvorLista.texto}
+                                                    {isCreator && (
+                                                        <button onClick={() => handleExcluirLouvor(louvorId)}>Excluir</button> // Botão de exclusão aparece apenas se o usuário for o criador
+                                                    )}
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={louvorLista.userVoted}
+                                                        onChange={(e) => handleVotacaoLouvores(louvorId, e.target.checked)}
+                                                    />
+                                                </li>
+                                            );
+                                        })
+                                    ) : (
+                                        <p>Nenhuma música adicionada</p>
+                                    )}
+                                </div>
                             </ul>
                         </div>
                     </div>
