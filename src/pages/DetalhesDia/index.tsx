@@ -359,7 +359,7 @@ export function DetalhesDia() {
                                         <li key={avisoId} className="aviso-item">
                                             {avisoLista.texto}
                                             {isCreator && (
-                                                <button onClick={() => handleExcluirAviso(avisoId)}>Excluir</button>
+                                                <button onClick={() => handleExcluirAviso(avisoId)}>X</button>
                                             )}
                                         </li>
                                     );
