@@ -72,6 +72,10 @@ export function Home() {
         navigate('/profile')
     }
 
+    function handleAdd() {
+        navigate('/criardia')
+    }
+
     return (
         <div className='container-home'>
             {isLoading && <LoadingSpinner />}
@@ -135,6 +139,9 @@ export function Home() {
                         </nav>
                     </div>
                 </section>
+                {user && user.uid === "Qu3xbobOndcykGPCNXMmoGWeXBC2" && (
+                    <button className="btn-add-dia" onClick={handleAdd}>add</button>
+                )}
             </div>
         </div>
     )
