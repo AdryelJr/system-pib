@@ -234,22 +234,29 @@ export function DetalhesDia() {
     }
 
     async function movendoMusica(sugestaoId: any) {
-        const sugestaoRef = ref(database, `dias/${id}/sugestoes/${sugestaoId}`);
-        const sugestaoSnapshot = await get(sugestaoRef);
-        const sugestaoData = sugestaoSnapshot.val();
-        if (sugestaoData) {
-            const louvoresRef = ref(database, `dias/${id}/louvores`);
-            const novaLouvorRef = push(louvoresRef);
-            const votando = {
-                texto: sugestaoData.texto,
-                criador: userId,
-                votos: {
-                    [userID]: true
-                }
-            }
-            await set(novaLouvorRef, votando);
+        const numLouvores = Object.keys(louvores).length;
 
-            await remove(sugestaoRef);
+        if (numLouvores < 8) {
+            const sugestaoRef = ref(database, `dias/${id}/sugestoes/${sugestaoId}`);
+            const sugestaoSnapshot = await get(sugestaoRef);
+            const sugestaoData = sugestaoSnapshot.val();
+
+            if (sugestaoData) {
+                const louvoresRef = ref(database, `dias/${id}/louvores`);
+                const novaLouvorRef = push(louvoresRef);
+                const votando = {
+                    texto: sugestaoData.texto,
+                    criador: userId,
+                    votos: {
+                        [userID]: true
+                    }
+                }
+                await set(novaLouvorRef, votando);
+
+                await remove(sugestaoRef);
+            }
+        } else {
+            alert("Limite de músicas atingido (máximo de 8)")
         }
     }
 
