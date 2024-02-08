@@ -68,7 +68,7 @@ export function Home() {
         }, 1000);
     }, []);
 
-    function handleProfile(){
+    function handleProfile() {
         navigate('/profile')
     }
 
@@ -101,8 +101,7 @@ export function Home() {
                     <div className="main-header">
                         <h3>Programações</h3>
                     </div>
-
-                    {Object.keys(data).map((diaId) => {
+                    {data && Object.keys(data).map((diaId) => {
                         const dia = data[diaId];
                         return (
                             <InfoDia
