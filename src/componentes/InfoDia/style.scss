@@ -33,21 +33,26 @@
             border-radius: 15px;
             min-width: 100%;
             overflow: hidden;
+
             p {
                 font-weight: 500;
                 margin: 8px 0;
             }
 
-            img {
-                margin: 0 6px;
-                width: 35px;
-                height: 35px;
-                object-fit: cover;
-                border-radius: 9999px;
-            }
+            .confirmado-item {
+                display: flex;
 
-            .ninguem-confirmardo{
-                margin: 18px 0;
+                img {
+                    margin: 0 4px;
+                    width: 35px;
+                    height: 35px;
+                    object-fit: cover;
+                    border-radius: 9999px;
+                }
+
+                .ninguem-confirmardo {
+                    margin: 18px 0;
+                }
             }
         }
     }

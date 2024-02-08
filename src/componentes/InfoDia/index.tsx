@@ -66,22 +66,24 @@ export const InfoDia = ({ id, data, horario, tipoCulto }: any) => {
                 <span>{diaSemanaFormatado}</span>
                 <div className="row-content">
                     <p>{tipoCulto}</p>
-                    {hasConfirmedUsers ? (
-                        confirmados.map((confirmado) => (
-                            <div key={confirmado.userId} className='confirmado-item'>
-                                {confirmado.avatar ? (
-                                    <img src={confirmado.avatar} alt={`Avatar de ${confirmado.userId}`} />
-                                ) : (
-                                    <div />
-                                )}
-                                <p>{confirmado.userId}</p>
+                    <div className='confirmado-item'>
+                        {hasConfirmedUsers ? (
+                            confirmados.map((confirmado) => (
+                                <>
+                                    {confirmado.avatar ? (
+                                        <img src={confirmado.avatar} alt={`Avatar de ${confirmado.userId}`} />
+                                    ) : (
+                                        <div />
+                                    )}
+                                    <p>{confirmado.userId}</p>
+                                </>
+                            ))
+                        ) : (
+                            <div className='confirmado-item'>
+                                <p className='ninguem-confirmardo'>Nenhum confirmado</p>
                             </div>
-                        ))
-                    ) : (
-                        <div className='confirmado-item'>
-                            <p className='ninguem-confirmardo'>Nenhum confirmado</p>
-                        </div>
-                    )}
+                        )}
+                    </div>
                     <p>{horario}</p>
                 </div>
             </div>
