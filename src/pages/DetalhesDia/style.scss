@@ -181,14 +181,12 @@
                             font-weight: bold;
                             margin: 10px 0;
                             color: #a38b04;
+                            display: flex;
+                            align-items: center;
 
-                            button {
-                                background-color: #ff4d4f;
-                                padding: 1.7px 6px;
-                                margin: 0 15px;
-                                border-radius: 5px;
+                            svg{
                                 cursor: pointer;
-                                border: none;
+                                margin: 0 5px;
                             }
                         }
                     }
