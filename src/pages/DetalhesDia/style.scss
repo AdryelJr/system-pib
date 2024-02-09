@@ -133,7 +133,6 @@
 
                 p {
                     margin: 15px 5px;
-                    margin-right: 10px;
                 }
 
                 input {
@@ -188,7 +187,7 @@
                             justify-content: space-between;
                             font-size: 1.2em;
 
-                            svg{
+                            svg {
                                 cursor: pointer;
                                 margin: 0 5px;
                             }
@@ -249,11 +248,69 @@
                     max-width: 100%;
                     height: auto;
 
-                    ul {
-                        line-height: 23px;
-                        margin-left: 20px;
+                    .div-main-li {
+                        display: flex;
+                        width: 350px;
+
+                        .antes-li {
+                            width: 12%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            h3{
+                                margin-right: 10px;
+                            }
+
+                            input[type='checkbox'] {
+                                position: relative;
+                                margin: 5px 0;
+                                width: 20px;
+                                height: 20px;
+                                border-radius: 50%;
+                                appearance: none;
+                                border: 2px solid rgb(70, 70, 70);
+                                background-color: #fff;
+                                outline: none;
+
+                                &:checked {
+                                    background-color: green;
+                                }
+
+                                &::before {
+                                    content: '';
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    width: 12px;
+                                    height: 12px;
+                                    background-color: #049f04;
+                                    border-radius: 50%;
+                                    display: none;
+                                }
+                            }
+                        }
+
+                        li {
+                            padding: 0 5px;
+                            display: flex;
+                            font-weight: 500;
+                            justify-content: space-between;
+                            align-items: center;
+                            width: 85%;
+                        }
+
+                        .depois-li {
+                            width: 7%;
+
+                            svg {
+                                cursor: pointer;
+                            }
+                        }
                     }
                 }
+
             }
 
             .div-sugestao {
@@ -268,7 +325,6 @@
 
                     p {
                         margin: 15px 15px;
-                        margin-right: 20px;
                     }
 
                     input {
