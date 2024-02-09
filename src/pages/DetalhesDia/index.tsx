@@ -66,7 +66,6 @@ export function DetalhesDia() {
             const avisoRef = ref(database, `dias/${id}/avisos/${avisoId}`);
             await remove(avisoRef);
             console.log('Aviso excluído com sucesso!');
-            // Atualizar o estado dos avisos após a exclusão
             const novosAvisos = { ...avisos };
             delete novosAvisos[avisoId];
             setAvisos(novosAvisos);
@@ -91,7 +90,6 @@ export function DetalhesDia() {
                 setConfirmacaoConcluida(dadosConfirm.confirmacao);
             }
         });
-
     }, [id, userID, userAvatar, confirmacaoConcluida, mudou]);
 
 
@@ -163,18 +161,22 @@ export function DetalhesDia() {
 
     // CONFIRMADOS IMG =========================================================
     const [confirmados, setConfirmados] = useState<Confirmado[]>([]);
+    const [confirmadosNao, setConfirmadosNao] = useState<Confirmado[]>([]);
 
     useEffect(() => {
         const confirmRef = ref(database, `dias/${id}/infoUser`);
         onValue(confirmRef, (snapshot) => {
             const dadosConfirmados: Record<string, Confirmado> = snapshot.val();
             const confirmadosArray = Object.values(dadosConfirmados || {}).filter((user) => user.confirmacao);
+            const confirmadosNao = Object.values(dadosConfirmados || {}).filter((confirmado: Confirmado) => !confirmado.confirmacao);
             setConfirmados(confirmadosArray);
+            setConfirmadosNao(confirmadosNao);
         });
+
+        console.log(confirmadosNao);
     }, [id, userID, userAvatar]);
 
-
-
+    const confirmadosSim = confirmados.filter(confirmado => confirmado.confirmacao);
 
     // LOUVORES ================================================================
     const [louvores, setLouvores] = useState<DadosDoFirbase>({});
@@ -382,16 +384,34 @@ export function DetalhesDia() {
                     <div className='div-confirmados'>
                         <p>Confirmados</p>
                         <div className='content-confirmados'>
-                            {confirmados.map((confirmado) => (
+                            {confirmadosSim.map(confirmado => (
                                 <div key={confirmado.userId} className='confirmado-item'>
                                     {confirmado.avatar ? (
-                                        <img src={confirmado.avatar} alt={`Avatar de ${confirmado.userId}`} />
+
+                                        <div className='div-img-svg'>
+                                            <img src={confirmado.avatar} alt={`Avatar de ${confirmado.userId}`} />
+                                            <YesSVG />
+                                        </div>
                                     ) : (
                                         <img src="https://cdn-icons-png.flaticon.com/512/3106/3106921.png" alt="Avatar padrão" />
                                     )}
                                     <p>{confirmado.userId}</p>
                                 </div>
                             ))}
+                            {confirmadosNao.map(confirmado => (
+                                <div key={confirmado.userId} className='confirmado-item'>
+                                    {confirmado.avatar !== undefined ? (
+                                        <div className='div-img-svg'>
+                                            <img src={confirmado.avatar} alt={`Avatar de ${confirmado.userId}`} />
+                                            <NoSVG />
+                                        </div>
+                                    ) : (
+                                        <img src="https://cdn-icons-png.flaticon.com/512/3106/3106921.png" alt="Avatar padrão" />
+                                    )}
+                                    <p>{confirmado.userId}</p>
+                                </div>
+                            ))}
+
                         </div>
                     </div>
 

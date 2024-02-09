@@ -85,6 +85,7 @@
                         width: 40px;
                         height: 50px;
                         margin: 0 6px;
+
                         &:hover {
                             opacity: .8;
                         }
@@ -208,15 +209,28 @@
                     max-width: 100%;
                     height: auto;
 
-                    img {
-                        width: 45px;
-                        height: 45px;
-                        border-radius: 9999px;
-                        margin-right: 10px;
-                        object-fit: cover;
+                    .div-img-svg {
+                        position: relative;
 
-                        &+& img {
-                            margin-left: 50px;
+                        img {
+                            width: 45px;
+                            height: 45px;
+                            border-radius: 9999px;
+                            margin-right: 10px;
+                            object-fit: cover;
+
+                            &+& img {
+                                margin-left: 50px;
+                            }
+                        }
+
+                        svg {
+                            position: absolute;
+                            z-index: 1;
+                            top: 30px;
+                            right: 10px;
+                            width: 15px;
+                            height: 15px;
                         }
                     }
                 }
