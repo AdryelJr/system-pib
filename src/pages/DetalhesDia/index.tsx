@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { get, onValue, push, ref, remove, set } from 'firebase/database';
 import { database } from '../../services/firebase';
 import { useUser } from '../../context/AuthContext';
+import { YesSVG } from '../../componentes/iconsSVG/yes';
+import { NoSVG } from '../../componentes/iconsSVG/no';
 
 
 interface Confirmado {
@@ -337,8 +339,10 @@ export function DetalhesDia() {
                         </div>
                         <div className={`div-confirmation ${confirmacaoConcluida ? 'confirmacao-concluida' : ''}`}>
                             <p>Confirmar Presença</p>
-                            <button className='btn1' onClick={handleConfirmNao}>Não</button>
-                            <button className='btn2' onClick={handleConfirmSim}>Sim</button>
+                            <div>
+                                <NoSVG className='btn1' onClick={handleConfirmNao} />
+                                <YesSVG className='btn2' onClick={handleConfirmSim} />
+                            </div>
                         </div>
                     </div>
 

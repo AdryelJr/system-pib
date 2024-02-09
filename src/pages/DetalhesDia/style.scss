@@ -70,8 +70,9 @@
                 .div-confirmation {
                     display: flex;
                     margin-top: -10px;
-                    padding: 20px 8px 10px 15px;
+                    padding: 10px 8px 1px 10px;
                     background-color: #e7e7e7;
+                    justify-content: space-between;
                     align-items: center;
                     border-radius: 0 0 10px 10px;
 
@@ -79,28 +80,22 @@
                         margin-right: 10px;
                     }
 
-                    button {
-                        border-radius: 8px;
-                        padding: 8px 25px;
-                        border: 0;
-                        box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
-                        margin: 0 10px;
+                    svg {
                         cursor: pointer;
-                        transition: .2s ease-in-out;
-
+                        width: 40px;
+                        height: 50px;
+                        margin: 0 6px;
                         &:hover {
                             opacity: .8;
                         }
                     }
 
                     .btn1 {
-                        background-color: #dd0000ea;
-                        color: #fff;
+                        opacity: 1;
                     }
 
                     .btn2 {
-                        background-color: #049f0451;
-                        color: #fff;
+                        opacity: .4;
                     }
                 }
 
@@ -108,13 +103,11 @@
                     transition: all .5s ease-in-out;
 
                     .btn1 {
-                        background-color: #dd000068;
-                        color: #fff;
+                        opacity: .4;
                     }
 
                     .btn2 {
-                        background-color: #049f04cf;
-                        color: #fff;
+                        opacity: 1;
                     }
                 }
             }
