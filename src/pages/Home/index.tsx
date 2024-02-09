@@ -139,7 +139,7 @@ export function Home() {
                         </nav>
                     </div>
                 </section>
-                {user && user.uid === "Qu3xbobOndcykGPCNXMmoGWeXBC2" || 'Ge7RBqSFOcd9LxLul0y5A7gcjUh1' && (
+                {(user && user.uid === "Qu3xbobOndcykGPCNXMmoGWeXBC2" || user && user.uid === "Ge7RBqSFOcd9LxLul0y5A7gcjUh1") && (
                     <button className="btn-add-dia" onClick={handleAdd}>add</button>
                 )}
             </div>
