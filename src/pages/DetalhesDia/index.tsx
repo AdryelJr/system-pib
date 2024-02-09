@@ -397,7 +397,7 @@ export function DetalhesDia() {
                             <ul>
                                 {louvores && Object.keys(louvores).length > 0 ? (
                                     Object.keys(louvores)
-                                        .sort((a, b) => numeroVotos[b] - numeroVotos[a]) // Ordena as chaves pela quantidade de votos
+                                        .sort((a, b) => numeroVotos[b] - numeroVotos[a])
                                         .map((louvorId: any) => {
                                             const louvorLista = louvores[louvorId];
                                             const votos = numeroVotos[louvorId];
@@ -405,7 +405,7 @@ export function DetalhesDia() {
                                             return (
                                                 <div className='div-main-li'>
                                                     <div className='antes-li'>
-                                                    <h3>{votos}</h3>
+                                                        <h3>{votos}</h3>
                                                         <input
                                                             type="checkbox"
                                                             checked={louvorLista.userVoted}
