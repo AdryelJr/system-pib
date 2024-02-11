@@ -50,7 +50,8 @@
 
                 .child-informations {
                     position: relative;
-                    background-color: #d3d3d3;
+                    // background-color: #d3d3d3;
+                    background: linear-gradient(to top, #d3d3d3, #ababab);
                     padding: 10px 15px;
                     border-radius: 10px;
                     display: flex;
