@@ -185,9 +185,12 @@ export function DetalhesDia() {
         const louvorRef = ref(database, `dias/${id}/louvores`);
         onValue(louvorRef, (snapshot) => {
             const dadosLouvores = snapshot.val();
-            setLouvores(dadosLouvores);
+            if (dadosLouvores !== null) {
+                setLouvores(dadosLouvores);
+            }
         });
     }, []);
+
 
 
 
@@ -263,8 +266,6 @@ export function DetalhesDia() {
             alert("Limite de músicas atingido (máximo de 8)")
         }
     }
-
-
 
     // -------------------------------------------------------------------------
     async function handleVotacaoLouvores(louvorId: any, isChecked: boolean) {
@@ -474,12 +475,12 @@ export function DetalhesDia() {
                                     const sugestaoLista = sugestoesBanco[sugestaoId];
                                     return (
                                         <li
-                                            key={sugestaoId}>
+                                            key={sugestaoId}>{sugestaoLista.texto}
                                             <input
                                                 type="checkbox"
                                                 onChange={(e) => handleVotacao(sugestaoId, e.target.checked)}
                                             />
-                                            {sugestaoLista.texto}
+
                                         </li>
                                     )
                                 })}
