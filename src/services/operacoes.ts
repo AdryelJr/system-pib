@@ -17,6 +17,7 @@ export async function createUser(newUser: UserTypeCreate) {
             await updateProfile(user, {
                 displayName: newUser.name,
             });
+            alert('New user created');
         })
         .catch((error) => {
             const errorCode = error.code;

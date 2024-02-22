@@ -10,7 +10,6 @@ export function AdminAccount() {
 
     function handleCreateAccountForm(event: FormEvent) {
         event.preventDefault();
-
         const newUser = {
             name: name,
             email: email,
@@ -21,7 +20,6 @@ export function AdminAccount() {
                 setName('');
                 setEmail('');
                 setPassword('');
-                alert('New user created');
             })
             .catch((error) => {
                 console.error('Erro ao criar usuário:', error.message);
