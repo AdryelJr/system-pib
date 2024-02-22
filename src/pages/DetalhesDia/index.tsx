@@ -474,11 +474,12 @@ export function DetalhesDia() {
                                     const sugestaoLista = sugestoesBanco[sugestaoId];
                                     return (
                                         <li
-                                            key={sugestaoId}>{sugestaoLista.texto}
+                                            key={sugestaoId}>
                                             <input
                                                 type="checkbox"
                                                 onChange={(e) => handleVotacao(sugestaoId, e.target.checked)}
                                             />
+                                            {sugestaoLista.texto}
                                         </li>
                                     )
                                 })}
