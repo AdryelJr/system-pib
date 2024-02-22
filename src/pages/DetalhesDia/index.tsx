@@ -27,7 +27,7 @@ type DadosDoFirbase = Record<string, Lov>;
 export function DetalhesDia() {
     const { user } = useUser();
     const userID = user?.uid ?? 'false';
-    const userAvatar = user?.photoURL ?? 'sem';
+    const userAvatar = user?.photoURL ?? 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
 
@@ -172,7 +172,6 @@ export function DetalhesDia() {
             setConfirmadosNao(confirmadosNao);
         });
 
-        // console.log(confirmadosNao);
     }, [id, userID, userAvatar]);
 
     const confirmadosSim = confirmados.filter(confirmado => confirmado.confirmacao);
@@ -229,7 +228,6 @@ export function DetalhesDia() {
     async function handleVotacao(sugestaoId: any, isChecked: boolean) {
         const votosRef = ref(database, `dias/${id}/sugestoes/${sugestaoId}/texto`);
         if (isChecked) {
-            // console.log(sugestaoId)
             onValue(votosRef, (snapshot) => {
                 const sugestaoName = snapshot.val();
                 if (!sugestaoName.moved) {
@@ -316,7 +314,6 @@ export function DetalhesDia() {
         });
     }, [id]);
 
-
     return (
         <div className="container-detalhesDia">
             {isLoading && <LoadingSpinner />}
@@ -386,27 +383,23 @@ export function DetalhesDia() {
                         <div className='content-confirmados'>
                             {confirmadosSim.map(confirmado => (
                                 <div key={confirmado.userId} className='confirmado-item'>
-                                    {confirmado.avatar ? (
+                                    {confirmado.avatar && (
 
                                         <div className='div-img-svg'>
                                             <img src={confirmado.avatar} alt={`Avatar de ${confirmado.userId}`} />
                                             <YesSVG />
                                         </div>
-                                    ) : (
-                                        <img src="https://cdn-icons-png.flaticon.com/512/3106/3106921.png" alt="Avatar padrão" />
                                     )}
                                     <p>{confirmado.userId}</p>
                                 </div>
                             ))}
                             {confirmadosNao.map(confirmado => (
                                 <div key={confirmado.userId} className='confirmado-item'>
-                                    {confirmado.avatar !== undefined ? (
+                                    {confirmado.avatar && (
                                         <div className='div-img-svg'>
                                             <img src={confirmado.avatar} alt={`Avatar de ${confirmado.userId}`} />
                                             <NoSVG />
                                         </div>
-                                    ) : (
-                                        <img src="https://cdn-icons-png.flaticon.com/512/3106/3106921.png" alt="Avatar padrão" />
                                     )}
                                     <p>{confirmado.userId}</p>
                                 </div>
