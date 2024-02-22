@@ -121,7 +121,6 @@ export function DetalhesDia() {
         if (user) {
             setUserId(userID);
         }
-        console.log(userId)
     }, [user]);
 
 
@@ -173,7 +172,7 @@ export function DetalhesDia() {
             setConfirmadosNao(confirmadosNao);
         });
 
-        console.log(confirmadosNao);
+        // console.log(confirmadosNao);
     }, [id, userID, userAvatar]);
 
     const confirmadosSim = confirmados.filter(confirmado => confirmado.confirmacao);
@@ -230,7 +229,7 @@ export function DetalhesDia() {
     async function handleVotacao(sugestaoId: any, isChecked: boolean) {
         const votosRef = ref(database, `dias/${id}/sugestoes/${sugestaoId}/texto`);
         if (isChecked) {
-            console.log(sugestaoId)
+            // console.log(sugestaoId)
             onValue(votosRef, (snapshot) => {
                 const sugestaoName = snapshot.val();
                 if (!sugestaoName.moved) {
