@@ -400,50 +400,50 @@
                     ul {
                         line-height: 23px;
 
-                        // li {
-                        //     display: flex;
-                        //     align-items: center;
-                        //     height: 26px;
-                        // }
+                        li {
+                            display: flex;
+                            align-items: center;
+                            height: 26px;
+                        }
 
-                        // input[type='checkbox'] {
-                        //     position: relative;
-                        //     margin-right: 5px;
-                        //     width: 17px;
-                        //     height: 17px;
-                        //     border-radius: 50%;
-                        //     appearance: none;
-                        //     border: 2px solid black;
-                        //     background-color: white;
-                        //     outline: none;
+                        input[type='checkbox'] {
+                            position: relative;
+                            margin-right: 5px;
+                            width: 17px;
+                            height: 17px;
+                            border-radius: 50%;
+                            appearance: none;
+                            border: 2px solid black;
+                            background-color: white;
+                            outline: none;
 
-                        //     &:checked {
-                        //         background-color: #049f04;
-                        //     }
+                            &:checked {
+                                background-color: #049f04;
+                            }
 
-                        //     &::before {
-                        //         content: '';
-                        //         position: absolute;
-                        //         top: 50%;
-                        //         left: 50%;
-                        //         transform: translate(-50%, -50%);
-                        //         background-color: #049f04;
-                        //         border-radius: 50%;
-                        //         display: none;
-                        //     }
+                            &::before {
+                                content: '';
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                background-color: #049f04;
+                                border-radius: 50%;
+                                display: none;
+                            }
 
-                        //     &:checked::after {
-                        //         content: '✔';
-                        //         position: absolute;
-                        //         font-weight: bold;
-                        //         top: 50%;
-                        //         left: 50%;
-                        //         transform: translate(-50%, -50%);
-                        //         color: #fff;
-                        //         font-size: 13px;
-                        //         display: block;
-                        //     }
-                        // }
+                            &:checked::after {
+                                content: '✔';
+                                position: absolute;
+                                font-weight: bold;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                color: #fff;
+                                font-size: 13px;
+                                display: block;
+                            }
+                        }
 
                     }
                 }
