@@ -56,9 +56,20 @@ export function Home() {
         const diasRef = ref(database, 'dias/');
         onValue(diasRef, (snapshot) => {
             const dadosDoFirebase = snapshot.val();
-            setData(dadosDoFirebase);
+            if (dadosDoFirebase) {
+                const dadosArray = Object.entries<Dia>(dadosDoFirebase);
+                const dadosInvertidosArray = dadosArray.reverse();
+                const dadosInvertidos: DadosDoFirebase = dadosInvertidosArray.reduce((acc, [key, value]) => {
+                    acc[key] = value;
+                    return acc;
+                }, {} as DadosDoFirebase);
+                setData(dadosInvertidos);
+            } else {
+                setData({});
+            }
         });
     }, []);
+
 
     const [isLoading, setIsLoading] = useState(true);
 
