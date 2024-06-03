@@ -7,6 +7,7 @@ import { AdminAccount } from './pages/Admin/AdminAccount';
 import { UserProvider } from './context/AuthContext';
 import { CriarDia } from './pages/Admin/CriarDia';
 import { DetalhesDia } from './pages/DetalhesDia';
+import { Settings } from './pages/Settings';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/detalhes/:id" element={<DetalhesDia />} />
           <Route path="/admin" element={<AdminAccount />} />
           <Route path="/criardia" element={<CriarDia />} />
