@@ -167,7 +167,7 @@ body {
                             color: #333;
                         }
 
-                        
+
                     }
                 }
             }
@@ -203,5 +203,11 @@ body {
                 background-color: #164dc2;
             }
         }
+    }
+}
+
+@media(width <=420px) {
+    .close {
+        height: 95vw !important;
     }
 }
