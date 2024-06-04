@@ -212,3 +212,32 @@ body {
         height: 100vw !important;
     }
 }
+@media(width <=999px) {
+    .close {
+        height: 100vw !important;
+    }
+}
+
+// rolagem ---------------------------------------------------------------------
+
+/* Personaliza o contêiner da barra de rolagem */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* Personaliza a trilha da barra de rolagem */
+::-webkit-scrollbar-track {
+    background: #dedcdc;
+    border-radius: 8px;
+}
+
+/* Personaliza o polegar da barra de rolagem */
+::-webkit-scrollbar-thumb {
+    background: #bdbdbd;
+    border-radius: 8px; 
+}
+
+/* Personaliza o polegar da barra de rolagem ao passar o mouse */
+::-webkit-scrollbar-thumb:hover {
+    background: #a4a4a4;
+}
