@@ -6,7 +6,7 @@ import { useUser } from '../../context/AuthContext';
 import { useEffect } from 'react';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../services/firebase';
-import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 
 export function Musicas() {
     const navigate = useNavigate();
@@ -47,10 +47,19 @@ export function Musicas() {
     const handleAddMusic = async () => {
         try {
             setUploading(true);
-            const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic });
-            setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic }]);
+            const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+            let imageUrl = '';
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const storage = getStorage(); 
+                const storageRef = ref(storage, `imageMusic/${file.name}`); 
+                const uploadTask = uploadBytesResumable(storageRef, file); 
+                const snapshot = await uploadTask;
+                imageUrl = await getDownloadURL(snapshot.ref); 
+            }
+            const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic, imageUrl });
+            setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic, imageUrl }]);
             setNewMusic({ name: '', artist: '', category: 'louvor' });
-
             setModalOpen(false);
         } catch (error) {
             console.error('Erro ao adicionar música: ', error);
@@ -58,6 +67,7 @@ export function Musicas() {
             setUploading(false);
         }
     };
+
     const handleUpload = async (file: File) => {
         if (file) {
             try {
@@ -90,6 +100,10 @@ export function Musicas() {
 
     const closeModal = () => {
         setModalOpen(false);
+    };
+
+    const handleEyeClick = (musicId: string) => {
+        window.open(`/musicItem/${musicId}`, '_blank');
     };
 
     return (
@@ -153,7 +167,10 @@ export function Musicas() {
                                 .map(musicItem => (
                                     <div key={musicItem.id} className="div-music-item">
                                         <li >{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
-                                        <img src={eyeSvg} alt="eye" />
+                                        <img
+                                            src={eyeSvg} alt="eye"
+                                            onClick={(() => handleEyeClick(musicItem.id))}
+                                        />
                                     </div>
                                 ))}
                         </ul>

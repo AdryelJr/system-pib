@@ -9,6 +9,7 @@ import { CriarDia } from './pages/Admin/CriarDia';
 import { DetalhesDia } from './pages/DetalhesDia';
 import { Settings } from './pages/Settings';
 import { Musicas } from './pages/Musicas';
+import { MusicaItemPage } from './pages/Musicas/MusicaItemPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/music" element={<Musicas />} />
+          <Route path="/musicItem/:id" element={<MusicaItemPage />} />
           <Route path="/detalhes/:id" element={<DetalhesDia />} />
           <Route path="/admin" element={<AdminAccount />} />
           <Route path="/criardia" element={<CriarDia />} />
