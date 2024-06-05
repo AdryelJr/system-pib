@@ -90,7 +90,7 @@ export function Home() {
         navigate('/settings')
     }
     function handleMusic() {
-        navigate('/settings')
+        navigate('/music')
     }
 
     return (
