@@ -1,10 +1,11 @@
+import "./style.scss";
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './style.scss';
 import { useUser } from '../../context/AuthContext';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
-import { db, storage } from '../../services/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db } from '../../services/firebase';
+import { getStorage, ref, uploadBytesResumable } from "firebase/storage";
 
 export function Musicas() {
     const navigate = useNavigate();
@@ -16,11 +17,10 @@ export function Musicas() {
 
     const [music, setMusic] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor', imageURL: '' });
+    const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor' });
     const [modalOpen, setModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [imageFile, setImageFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
@@ -38,44 +38,50 @@ export function Musicas() {
         fetchMusic();
     }, []);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setNewMusic(prevState => ({ ...prevState, [name]: value }));
     };
 
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(e.target.value);
-    };
+    const handleAddMusic = async () => {
+        try {
+            setUploading(true);
+            const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic });
+            setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic }]);
+            setNewMusic({ name: '', artist: '', category: 'louvor' });
 
-    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCategory(e.target.value);
-    };
-
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setImageFile(e.target.files[0]);
+            setModalOpen(false);
+        } catch (error) {
+            console.error('Erro ao adicionar música: ', error);
+        } finally {
+            setUploading(false);
         }
     };
 
-    const handleAddMusic = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleUpload = async (file: File) => {
+        if (file) {
+            try {
+                const storage = getStorage();
+                const storageRef = ref(storage, `imageMusic/${file.name}`);
+                await uploadBytesResumable(storageRef, file);
+                console.log("Arquivo enviado com sucesso!")
+            } catch (error) {
+                console.error('Erro ao enviar imagem: ', error);
+            }
+        }
+    };
+
+    const handleAddMusicButtonClick = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            setUploading(true);
-            let imageURL = '';
-            if (imageFile) {
-                const storageRef = ref(storage, `imagesMusic/${imageFile.name}`);
-                await uploadBytes(storageRef, imageFile);
-                imageURL = await getDownloadURL(storageRef);
+            const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                await handleUpload(fileInput.files[0]);
             }
-            const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic, imageURL });
-            setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic, imageURL }]);
-            setNewMusic({ name: '', artist: '', category: 'louvor', imageURL: '' });
-            setImageFile(null);
-            setModalOpen(false);
+            handleAddMusic()
+            // Aqui você pode chamar a função handleAddMusic se necessário
         } catch (error) {
-            console.error('Erro adding music: ', error);
-        } finally {
-            setUploading(false);
+            console.error('Erro ao adicionar música: ', error);
         }
     };
 
@@ -86,12 +92,6 @@ export function Musicas() {
     const closeModal = () => {
         setModalOpen(false);
     };
-
-    const filteredMusic = music.filter(musicItem => {
-        const matchesSearch = musicItem.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = selectedCategory === '' || musicItem.category === selectedCategory;
-        return matchesSearch && matchesCategory;
-    });
 
     return (
         <div className='container-music'>
@@ -113,13 +113,13 @@ export function Musicas() {
                             type="text"
                             name="searchTerm"
                             value={searchTerm}
-                            onChange={handleSearchChange}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Pesquisa"
                         />
                         <select
                             name="category"
                             value={selectedCategory}
-                            onChange={handleCategoryChange}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
                         >
                             <option value="">Todas as categorias</option>
                             <option value="louvor">Louvor</option>
@@ -128,32 +128,45 @@ export function Musicas() {
                             <option value="lenta">Lenta</option>
                             <option value="adoracao">Adoração</option>
                         </select>
+
+
                     </form>
                 </div>
-
-                {loading ? (
-                    <div>Carregando...</div>
-                ) : (
-                    <main>
+                <main>
+                    {loading ? (
+                        <div>Carregando...</div>
+                    ) : (
                         <ul>
-                            {filteredMusic.map(musicItem => (
-                                <li key={musicItem.id}>{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
-                            ))}
+                            {music
+                                .filter(musicItem => {
+                                    if (!searchTerm && !selectedCategory) return true;
+                                    if (searchTerm && !selectedCategory) {
+                                        return musicItem.name.toLowerCase().includes(searchTerm.toLowerCase());
+                                    }
+                                    if (!searchTerm && selectedCategory) {
+                                        return musicItem.category === selectedCategory;
+                                    }
+                                    return (
+                                        musicItem.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                                        musicItem.category === selectedCategory
+                                    );
+                                })
+                                .map(musicItem => (
+                                    <li key={musicItem.id}>{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
+                                ))}
                         </ul>
-                    </main>
-                )}
-
-                {user && user.uid === "Qu3xbobOndcykGPCNXMmoGWeXBC2" && (
-                    <button className="btn-add-music" onClick={openModal}>Add Music</button>
+                    )}
+                </main>
+                {(user && user.uid === "Qu3xbobOndcykGPCNXMmoGWeXBC2") && (
+                    <button className="btn-add-music" onClick={openModal}>Adicionar Música</button>
                 )}
             </div>
-
             {modalOpen && (
                 <div className="modal">
                     <div className="modal-content">
                         <span className="close" onClick={closeModal}>&times;</span>
                         <h2>Adicionar Música</h2>
-                        <form onSubmit={handleAddMusic}>
+                        <form onSubmit={handleAddMusicButtonClick}>
                             <input
                                 type="text"
                                 name="name"
@@ -183,13 +196,19 @@ export function Musicas() {
                                 <option value="adoracao">Adoração</option>
                             </select>
                             <input
+                                id="fileInput"
                                 type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                required
                             />
-                            {uploading && <p>Carregando imagem...</p>}
-                            <button type="submit">Adicionar Música</button>
+                            {uploading ? (
+                                <>
+                                    <span>Carregando...</span>
+                                    <button className="btn-loading" type="submit" disabled>
+                                        <div className="loader"></div>
+                                    </button>
+                                </>
+                            ) : (
+                                <button type="submit" >Adicionar Música</button>
+                            )}
                         </form>
                     </div>
                 </div>
