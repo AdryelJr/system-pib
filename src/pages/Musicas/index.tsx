@@ -4,7 +4,7 @@ import { useUser } from '../../context/AuthContext';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db, storage } from '../../services/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Importe getDownloadURL
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export function Musicas() {
     const navigate = useNavigate();
@@ -18,8 +18,8 @@ export function Musicas() {
     const [loading, setLoading] = useState(true);
     const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor', imageURL: '' });
     const [modalOpen, setModalOpen] = useState(false);
-    const [searchTerm, _setSearchTerm] = useState('');
-    const [selectedCategory, _setSelectedCategory] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
 
@@ -43,6 +43,14 @@ export function Musicas() {
         setNewMusic(prevState => ({ ...prevState, [name]: value }));
     };
 
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedCategory(e.target.value);
+    };
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setImageFile(e.target.files[0]);
@@ -55,13 +63,13 @@ export function Musicas() {
             setUploading(true);
             let imageURL = '';
             if (imageFile) {
-                const storageRef = ref(storage, `images/${imageFile.name}`);
+                const storageRef = ref(storage, `imagesMusic/${imageFile.name}`);
                 await uploadBytes(storageRef, imageFile);
-                imageURL = await getDownloadURL(storageRef); // Corrigindo aqui
+                imageURL = await getDownloadURL(storageRef);
             }
             const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic, imageURL });
-            setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic }]);
-            setNewMusic({ name: '', artist: '', category: 'louvor', imageURL: '' }); // Limpar o formulário
+            setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic, imageURL }]);
+            setNewMusic({ name: '', artist: '', category: 'louvor', imageURL: '' });
             setImageFile(null);
             setModalOpen(false);
         } catch (error) {
@@ -79,9 +87,11 @@ export function Musicas() {
         setModalOpen(false);
     };
 
-    if (loading) {
-        return <div>Carregando...</div>;
-    }
+    const filteredMusic = music.filter(musicItem => {
+        const matchesSearch = musicItem.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = selectedCategory === '' || musicItem.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+    });
 
     return (
         <div className='container-music'>
@@ -103,13 +113,13 @@ export function Musicas() {
                             type="text"
                             name="searchTerm"
                             value={searchTerm}
-                            onChange={handleInputChange}
+                            onChange={handleSearchChange}
                             placeholder="Pesquisa"
                         />
                         <select
                             name="category"
                             value={selectedCategory}
-                            onChange={handleInputChange}
+                            onChange={handleCategoryChange}
                         >
                             <option value="">Todas as categorias</option>
                             <option value="louvor">Louvor</option>
@@ -120,31 +130,24 @@ export function Musicas() {
                         </select>
                     </form>
                 </div>
-                <main>
-                    <ul>
-                        {music
-                            .filter(musicItem => {
-                                if (!searchTerm && !selectedCategory) return true;
-                                if (searchTerm && !selectedCategory) {
-                                    return musicItem.name.toLowerCase().includes(searchTerm.toLowerCase());
-                                }
-                                if (!searchTerm && selectedCategory) {
-                                    return musicItem.category === selectedCategory;
-                                }
-                                return (
-                                    musicItem.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-                                    musicItem.category === selectedCategory
-                                );
-                            })
-                            .map(musicItem => (
+
+                {loading ? (
+                    <div>Carregando...</div>
+                ) : (
+                    <main>
+                        <ul>
+                            {filteredMusic.map(musicItem => (
                                 <li key={musicItem.id}>{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
                             ))}
-                    </ul>
-                </main>
-                {(user && user.uid === "Qu3xbobOndcykGPCNXMmoGWeXBC2") && (
+                        </ul>
+                    </main>
+                )}
+
+                {user && user.uid === "Qu3xbobOndcykGPCNXMmoGWeXBC2" && (
                     <button className="btn-add-music" onClick={openModal}>Add Music</button>
                 )}
             </div>
+
             {modalOpen && (
                 <div className="modal">
                     <div className="modal-content">
@@ -194,4 +197,3 @@ export function Musicas() {
         </div>
     );
 }
-
