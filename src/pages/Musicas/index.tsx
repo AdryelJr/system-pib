@@ -17,6 +17,8 @@ export function Musicas() {
     const [loading, setLoading] = useState(true);
     const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor' });
     const [modalOpen, setModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     useEffect(() => {
         const fetchMusic = async () => {
@@ -35,7 +37,13 @@ export function Musicas() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setNewMusic(prevState => ({ ...prevState, [name]: value }));
+        if (name === 'searchTerm') {
+            setSearchTerm(value);
+        } else if (name === 'category') {
+            setSelectedCategory(value);
+        } else {
+            setNewMusic(prevState => ({ ...prevState, [name]: value }));
+        }
     };
 
     const handleAddMusic = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -73,17 +81,51 @@ export function Musicas() {
                             <path d="M6 12H18M6 12L11 7M6 12L11 17" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
                         </g>
                     </svg>
-                        <h2>Músicas</h2>
+                    <h2>Músicas</h2>
                 </header>
 
                 <div className='div-form'>
-                    {/* Conteúdo adicional pode ser adicionado aqui */}
+                    <form>
+                        <input
+                            type="text"
+                            name="searchTerm"
+                            value={searchTerm}
+                            onChange={handleInputChange}
+                            placeholder="Pesquisar por nome"
+                        />
+                        <select
+                            name="category"
+                            value={selectedCategory}
+                            onChange={handleInputChange}
+                        >
+                            <option value="">Todas as categorias</option>
+                            <option value="louvor">Louvor</option>
+                            <option value="alegre">Alegre</option>
+                            <option value="rapida">Rápida</option>
+                            <option value="lenta">Lenta</option>
+                            <option value="adoracao">Adoração</option>
+                        </select>
+                    </form>
                 </div>
                 <main>
                     <ul>
-                        {music.map(musicItem => (
-                            <li key={musicItem.id}>{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
-                        ))}
+                        {music
+                            .filter(musicItem => {
+                                if (!searchTerm && !selectedCategory) return true;
+                                if (searchTerm && !selectedCategory) {
+                                    return musicItem.name.toLowerCase().includes(searchTerm.toLowerCase());
+                                }
+                                if (!searchTerm && selectedCategory) {
+                                    return musicItem.category === selectedCategory;
+                                }
+                                return (
+                                    musicItem.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                                    musicItem.category === selectedCategory
+                                );
+                            })
+                            .map(musicItem => (
+                                <li key={musicItem.id}>{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
+                            ))}
                     </ul>
                 </main>
                 {(user && user.uid === "Qu3xbobOndcykGPCNXMmoGWeXBC2") && (
