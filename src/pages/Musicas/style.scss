@@ -12,6 +12,7 @@ $background-color: #F8F8FC;
     align-items: center;
 
     .content-music {
+        position: relative;
         margin-top: -30px;
         width: 420px;
         height: 95vh;
@@ -27,6 +28,7 @@ $background-color: #F8F8FC;
             position: relative;
             width: 100%;
             margin: 1.5em 0;
+            margin-bottom: 2em;
 
             svg {
                 cursor: pointer;
@@ -44,19 +46,25 @@ $background-color: #F8F8FC;
         }
 
         main {
+            overflow-y: scroll;
+            max-height: 95vh;
+
+
             ul {
                 list-style: none;
                 padding: 0;
 
                 li {
-                    padding: 0.5em 0;
+                    padding: 1em 0;
                     border-bottom: 1px solid #ddd;
                 }
             }
         }
 
         .btn-add-music {
-            width: 100%;
+            position: absolute;
+            right: 30px;
+            bottom: 10%;
             padding: 1.5em;
             background-color: $primary-color;
             color: white;
@@ -92,6 +100,12 @@ $background-color: #F8F8FC;
             border-radius: 5px;
             border: 1px solid #565555;
             margin: .5em 0;
+        }
+        
+        select{
+            padding: 1.2em;
+            margin: 0 1em;
+            border-radius: 5px;
         }
 
         button {

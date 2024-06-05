@@ -15,7 +15,7 @@ export function Musicas() {
 
     const [music, setMusic] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [newMusic, setNewMusic] = useState({ name: '', artist: '' });
+    const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor' });
     const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export function Musicas() {
         fetchMusic();
     }, []);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setNewMusic(prevState => ({ ...prevState, [name]: value }));
     };
@@ -43,7 +43,7 @@ export function Musicas() {
         try {
             const docRef = await addDoc(collection(db, 'musicas'), newMusic);
             setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic }]);
-            setNewMusic({ name: '', artist: '' }); // Limpar o formulário
+            setNewMusic({ name: '', artist: '', category: 'louvor' }); // Limpar o formulário
             setModalOpen(false); // Fechar o modal após adicionar a música
         } catch (error) {
             console.error('Erro adding music: ', error);
@@ -66,17 +66,23 @@ export function Musicas() {
         <div className='container-music'>
             <div className='content-music'>
                 <header>
-                    <svg onClick={handleHome} width={50} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 12H18M6 12L11 7M6 12L11 17" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
-                    <h2>Músicas</h2>
+                    <svg onClick={handleHome} width={50} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                        <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <path d="M6 12H18M6 12L11 7M6 12L11 17" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                        </g>
+                    </svg>
+                        <h2>Músicas</h2>
                 </header>
-                
+
                 <div className='div-form'>
                     {/* Conteúdo adicional pode ser adicionado aqui */}
                 </div>
                 <main>
                     <ul>
                         {music.map(musicItem => (
-                            <li key={musicItem.id}>{musicItem.name} - {musicItem.artist}</li>
+                            <li key={musicItem.id}>{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
                         ))}
                     </ul>
                 </main>
@@ -106,6 +112,18 @@ export function Musicas() {
                                 placeholder="Artista"
                                 required
                             />
+                            <select
+                                name="category"
+                                value={newMusic.category}
+                                onChange={handleInputChange}
+                                required
+                            >
+                                <option value="louvor">Louvor</option>
+                                <option value="alegre">Alegre</option>
+                                <option value="rapida">Rápida</option>
+                                <option value="lenta">Lenta</option>
+                                <option value="adoracao">Adoração</option>
+                            </select>
                             <button type="submit">Adicionar Música</button>
                         </form>
                     </div>
