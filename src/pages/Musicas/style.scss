@@ -57,7 +57,7 @@ $background-color: #F8F8FC;
 
         .btn-add-music {
             width: 100%;
-            padding: 1em;
+            padding: 1.5em;
             background-color: $primary-color;
             color: white;
             border: none;
@@ -83,10 +83,21 @@ $background-color: #F8F8FC;
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 1000;
 
+        h2{
+            margin-bottom: 1em;
+        }
+
+        input {
+            padding: 1.2em;
+            border-radius: 5px;
+            border: 1px solid #565555;
+            margin: .5em 0;
+        }
+
         button {
             margin-top: 20px;
             width: 100%;
-            padding: 1em;
+            padding: 1.5em;
             background-color: $primary-color;
             color: white;
             border: none;
