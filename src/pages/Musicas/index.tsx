@@ -18,8 +18,8 @@ export function Musicas() {
     const [loading, setLoading] = useState(true);
     const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor', imageURL: '' });
     const [modalOpen, setModalOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
+    const [searchTerm, _setSearchTerm] = useState('');
+    const [selectedCategory, _setSelectedCategory] = useState('');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
 
