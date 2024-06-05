@@ -138,9 +138,12 @@ body {
                         margin-top: 10px;
                         display: flex;
                         flex-direction: column;
-                        justify-content: space-between;
                         height: 30vw;
                         // max-height: 400px;
+                        
+                        .config{
+                            margin-bottom: 30vh;
+                        }
 
                         .close-content-menu {
                             display: flex;
