@@ -64,14 +64,21 @@ $background-color: #F8F8FC;
             overflow-y: scroll;
             max-height: 80vh;
 
-
-            ul {
+            .div-music-item {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
                 list-style: none;
-                padding: 0;
+                padding: 1em 0;
+                border-bottom: 1px solid #ddd;
 
                 li {
+                    width: 70%;
                     padding: 1em 0;
-                    border-bottom: 1px solid #ddd;
+                }
+
+                img {
+                    width: 50px;
                 }
             }
         }
@@ -181,11 +188,12 @@ $background-color: #F8F8FC;
 
 // ----------------------------- loading button --------------------------------
 
-.btn-loading{
+.btn-loading {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 .loader {
     border: 3px solid rgba(0, 0, 0, 0.1);
     border-left-color: #3498db;

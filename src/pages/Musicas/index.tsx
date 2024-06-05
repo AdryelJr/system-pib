@@ -1,4 +1,5 @@
 import "./style.scss";
+import eyeSvg from "../../assets/svg/eye.svg";
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/AuthContext';
@@ -57,12 +58,11 @@ export function Musicas() {
             setUploading(false);
         }
     };
-
     const handleUpload = async (file: File) => {
         if (file) {
             try {
                 const storage = getStorage();
-                const storageRef = ref(storage, `imageMusic/${file.name}`);
+                const storageRef = ref(storage, `imageMusic/${newMusic.name}`);
                 await uploadBytesResumable(storageRef, file);
                 console.log("Arquivo enviado com sucesso!")
             } catch (error) {
@@ -79,7 +79,6 @@ export function Musicas() {
                 await handleUpload(fileInput.files[0]);
             }
             handleAddMusic()
-            // Aqui você pode chamar a função handleAddMusic se necessário
         } catch (error) {
             console.error('Erro ao adicionar música: ', error);
         }
@@ -152,7 +151,10 @@ export function Musicas() {
                                     );
                                 })
                                 .map(musicItem => (
-                                    <li key={musicItem.id}>{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
+                                    <div key={musicItem.id} className="div-music-item">
+                                        <li >{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
+                                        <img src={eyeSvg} alt="eye" />
+                                    </div>
                                 ))}
                         </ul>
                     )}
