@@ -3,7 +3,8 @@ import './style.scss';
 import { useUser } from '../../context/AuthContext';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
-import { db } from '../../services/firebase';
+import { db, storage } from '../../services/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Importe getDownloadURL
 
 export function Musicas() {
     const navigate = useNavigate();
@@ -15,10 +16,12 @@ export function Musicas() {
 
     const [music, setMusic] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor' });
+    const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor', imageURL: '' });
     const [modalOpen, setModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         const fetchMusic = async () => {
@@ -37,24 +40,34 @@ export function Musicas() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        if (name === 'searchTerm') {
-            setSearchTerm(value);
-        } else if (name === 'category') {
-            setSelectedCategory(value);
-        } else {
-            setNewMusic(prevState => ({ ...prevState, [name]: value }));
+        setNewMusic(prevState => ({ ...prevState, [name]: value }));
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setImageFile(e.target.files[0]);
         }
     };
 
     const handleAddMusic = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const docRef = await addDoc(collection(db, 'musicas'), newMusic);
+            setUploading(true);
+            let imageURL = '';
+            if (imageFile) {
+                const storageRef = ref(storage, `images/${imageFile.name}`);
+                await uploadBytes(storageRef, imageFile);
+                imageURL = await getDownloadURL(storageRef); // Corrigindo aqui
+            }
+            const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic, imageURL });
             setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic }]);
-            setNewMusic({ name: '', artist: '', category: 'louvor' }); // Limpar o formulário
-            setModalOpen(false); // Fechar o modal após adicionar a música
+            setNewMusic({ name: '', artist: '', category: 'louvor', imageURL: '' }); // Limpar o formulário
+            setImageFile(null);
+            setModalOpen(false);
         } catch (error) {
             console.error('Erro adding music: ', error);
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -166,6 +179,13 @@ export function Musicas() {
                                 <option value="lenta">Lenta</option>
                                 <option value="adoracao">Adoração</option>
                             </select>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                required
+                            />
+                            {uploading && <p>Carregando imagem...</p>}
                             <button type="submit">Adicionar Música</button>
                         </form>
                     </div>
@@ -174,3 +194,4 @@ export function Musicas() {
         </div>
     );
 }
+
