@@ -8,6 +8,7 @@ import { UserProvider } from './context/AuthContext';
 import { CriarDia } from './pages/Admin/CriarDia';
 import { DetalhesDia } from './pages/DetalhesDia';
 import { Settings } from './pages/Settings';
+import { Musicas } from './pages/Musicas';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/music" element={<Musicas />} />
           <Route path="/detalhes/:id" element={<DetalhesDia />} />
           <Route path="/admin" element={<AdminAccount />} />
           <Route path="/criardia" element={<CriarDia />} />
