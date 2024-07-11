@@ -10,6 +10,7 @@ interface Musica {
     artist: string;
     name: string;
     category: string;
+    cifra: string;
 }
 
 export function MusicaTheDay() {
@@ -21,6 +22,7 @@ export function MusicaTheDay() {
     const [nomeMusica, setNomeMusica] = useState<string>('');
     const [autorMusica, setAutorMusica] = useState<string>('');
     const [categoryMusica, setCategoryMusica] = useState<string>('');
+    const [cifraMusica, setCifraMusica] = useState<string>('');
 
     useEffect(() => {
         if (!informacoesDia || !informacoesDia.id) {
@@ -65,6 +67,7 @@ export function MusicaTheDay() {
                 setNomeMusica(musicData.name);
                 setAutorMusica(musicData.artist);
                 setCategoryMusica(musicData.category);
+                setCifraMusica(musicData.cifra);
             }
         } catch (error) {
             console.error('Erro ao buscar música:', error);
@@ -104,13 +107,18 @@ export function MusicaTheDay() {
 
                 <main>
                     {nomeMusica && (
-                        <div className='div-main-cifra'>
-                            <div>
-                                <h2>{nomeMusica}</h2>
-                                <h4>{autorMusica}</h4>
+                        <>
+                            <div className='div-main-cifra'>
+                                <div>
+                                    <h2>{nomeMusica}</h2>
+                                    <h4>{autorMusica}</h4>
+                                </div>
+                                <span>Categoria: {categoryMusica}</span>
                             </div>
-                            <span>Categoria: {categoryMusica}</span>
-                        </div>
+                            <div className='div-cifra-formatada'>
+                                <pre>{cifraMusica}</pre>
+                            </div>
+                        </>
                     )}
                     {!nomeMusica && (
                         <div>Escolha uma música.</div>
