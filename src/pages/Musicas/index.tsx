@@ -51,11 +51,11 @@ export function Musicas() {
             let imageUrl = '';
             if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                const storage = getStorage(); 
-                const storageRef = ref(storage, `imageMusic/${file.name}`); 
-                const uploadTask = uploadBytesResumable(storageRef, file); 
+                const storage = getStorage();
+                const storageRef = ref(storage, `imageMusic/${file.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
                 const snapshot = await uploadTask;
-                imageUrl = await getDownloadURL(snapshot.ref); 
+                imageUrl = await getDownloadURL(snapshot.ref);
             }
             const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic, imageUrl });
             setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic, imageUrl }]);
@@ -167,6 +167,11 @@ export function Musicas() {
                                 .map(musicItem => (
                                     <div key={musicItem.id} className="div-music-item">
                                         <li >{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
+                                        {(user && user.uid == "Qu3xbobOndcykGPCNXMmoGWeXBC2") && (
+                                            <button className="button-add-music-dia">
+                                                add
+                                            </button>
+                                        )}
                                         <img
                                             src={eyeSvg} alt="eye"
                                             onClick={(() => handleEyeClick(musicItem.id))}
