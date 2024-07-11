@@ -166,6 +166,13 @@ $background-color: #F8F8FC;
         position: relative;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         animation: fadeIn 0.3s;
+
+        .form-rapidos {
+            .div-form-rapio {
+                display: flex;
+                flex-direction: column;
+            }
+        }
     }
 
     .close {

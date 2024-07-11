@@ -5,8 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/AuthContext';
 import { useEffect } from 'react';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
-import { db } from '../../services/firebase';
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+
+import { getDownloadURL, getStorage, uploadBytesResumable } from "firebase/storage";
+import { database, db } from "../../services/firebase";
+import { ref, onValue } from "firebase/database";
 
 export function Musicas() {
     const navigate = useNavigate();
@@ -20,9 +22,13 @@ export function Musicas() {
     const [loading, setLoading] = useState(true);
     const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor' });
     const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpenMusic, setModalOpenMusic] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [uploading, setUploading] = useState(false);
+    const [selectedMusicName, setSelectedMusicName] = useState('');
+    const [selectedMusicArtist, setSelectedMusicArtist] = useState('');
+    const [selectedDiaId, setSelectedDiaId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchMusic = async () => {
@@ -52,13 +58,13 @@ export function Musicas() {
             if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const storage = getStorage();
-                const storageRef = ref(storage, `imageMusic/${file.name}`);
-                const uploadTask = uploadBytesResumable(storageRef, file);
-                const snapshot = await uploadTask;
-                imageUrl = await getDownloadURL(snapshot.ref);
+                // const storageRef = ref(storage, `imageMusic/${file.name}`);
+                // const uploadTask = uploadBytesResumable(storageRef, file);
+                // const snapshot = await uploadTask;
+                // imageUrl = await getDownloadURL(snapshot.ref);
             }
-            const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic, imageUrl });
-            setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic, imageUrl }]);
+            // const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic, imageUrl });
+            // setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic, imageUrl }]);
             setNewMusic({ name: '', artist: '', category: 'louvor' });
             setModalOpen(false);
         } catch (error) {
@@ -71,9 +77,9 @@ export function Musicas() {
     const handleUpload = async (file: File) => {
         if (file) {
             try {
-                const storage = getStorage();
-                const storageRef = ref(storage, `imageMusic/${newMusic.name}`);
-                await uploadBytesResumable(storageRef, file);
+                // const storage = getStorage();
+                // const storageRef = ref(storage, `imageMusic/${newMusic.name}`);
+                // await uploadBytesResumable(storageRef, file);
                 console.log("Arquivo enviado com sucesso!")
             } catch (error) {
                 console.error('Erro ao enviar imagem: ', error);
@@ -100,10 +106,56 @@ export function Musicas() {
 
     const closeModal = () => {
         setModalOpen(false);
+        setModalOpenMusic(false);
     };
+
+    // ---- MODAL ADD MUSIC --------------------------------------------------------------------------------------------
+
+    const openModalMusic = (musicName: string, artist: string) => {
+        setSelectedMusicName(musicName);
+        setSelectedMusicArtist(artist);
+        setModalOpenMusic(true);
+    }
 
     const handleEyeClick = (musicId: string) => {
         window.open(`/musicItem/${musicId}`, '_blank');
+    };
+
+
+    // DADOS DOS DIAS --------------------------------------------------------------------------------------------------
+
+    type Dia = {
+        id: string;
+        data: string;
+        horario: string;
+        tipoCulto: string;
+    };
+
+    type DadosDoFirebase = Record<string, Dia>;
+
+    const [data, setData] = useState<DadosDoFirebase>({});
+
+    useEffect(() => {
+        const diasRef = ref(database, 'dias/');
+        onValue(diasRef, (snapshot) => {
+            const dadosDoFirebase = snapshot.val();
+            console.log('Dados do Firebase:', dadosDoFirebase); // Adicione este log
+            if (dadosDoFirebase) {
+                const dadosArray = Object.entries<Dia>(dadosDoFirebase);
+                const dadosInvertidosArray = dadosArray.reverse();
+                const dadosInvertidos: DadosDoFirebase = dadosInvertidosArray.reduce((acc, [key, value]) => {
+                    acc[key] = value;
+                    return acc;
+                }, {} as DadosDoFirebase);
+                setData(dadosInvertidos);
+            } else {
+                setData({});
+            }
+        });
+    }, []);
+
+    const handleDiaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedDiaId(e.target.value);
     };
 
     return (
@@ -168,7 +220,7 @@ export function Musicas() {
                                     <div key={musicItem.id} className="div-music-item">
                                         <li >{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
                                         {(user && user.uid == "Qu3xbobOndcykGPCNXMmoGWeXBC2" || user && user.uid == "Ge7RBqSFOcd9LxLul0y5A7gcjUh1" || user && user.uid == "xmylsFPyRAMezVJuOiEtY5qzHC43") && (
-                                            <button className="button-add-music-dia">
+                                            <button className="button-add-music-dia" onClick={() => openModalMusic(musicItem.name, musicItem.artist)}>
                                                 add
                                             </button>
                                         )}
@@ -233,6 +285,36 @@ export function Musicas() {
                             ) : (
                                 <button type="submit" >Adicionar Música</button>
                             )}
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {modalOpenMusic && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <span className="close" onClick={closeModal}>&times;</span>
+                        <h2>Adicionar Música</h2>
+                        <p>{selectedMusicName} - {selectedMusicArtist}</p>
+                        <br />
+                        <h2>A qual evento adicionar?</h2>
+                        <form className="form-rapidos">
+                            <div className="div-form-rapio">
+                                {Object.entries(data).map(([key, dia]) => (
+                                    <label key={key}>
+                                        <input
+                                            type="radio"
+                                            name="dia"
+                                            value={key}
+                                            checked={selectedDiaId === key}
+                                            onChange={handleDiaChange}
+                                        />
+                                        <span>{dia.data} - {dia.horario} - {dia.tipoCulto}</span>
+                                    </label>
+                                ))}
+                            </div>
+                            <br />
+                            <button type="submit">Adicionar Música</button>
                         </form>
                     </div>
                 </div>
