@@ -1,14 +1,24 @@
 import "./style.scss";
 import eyeSvg from "../../assets/svg/eye.svg";
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/AuthContext';
 import { useEffect } from 'react';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 
-import { getDownloadURL, getStorage, uploadBytesResumable } from "firebase/storage";
 import { database, db } from "../../services/firebase";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, update, get } from "firebase/database";
+
+
+type Dia = {
+    id: string;
+    data: string;
+    horario: string;
+    tipoCulto: string;
+    musicasAdicionadas?: { name: string; artist: string }[];
+};
+
+type DadosDoFirebase = Record<string, Dia>;
 
 export function Musicas() {
     const navigate = useNavigate();
@@ -20,15 +30,42 @@ export function Musicas() {
 
     const [music, setMusic] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'louvor' });
+    const [newMusic, setNewMusic] = useState({ name: '', artist: '', category: 'Louvor', cifra: '' });
     const [modalOpen, setModalOpen] = useState(false);
     const [modalOpenMusic, setModalOpenMusic] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [uploading, setUploading] = useState(false);
     const [selectedMusicName, setSelectedMusicName] = useState('');
     const [selectedMusicArtist, setSelectedMusicArtist] = useState('');
     const [selectedDiaId, setSelectedDiaId] = useState<string | null>(null);
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = event.target;
+        setNewMusic(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        try {
+            const docRef = await addDoc(collection(db, 'musicas'), {
+                artist: newMusic.artist,
+                name: newMusic.name,
+                category: newMusic.category,
+                cifra: newMusic.cifra
+            });
+
+            console.log('Música adicionada com ID: ', docRef.id);
+
+            // Limpar o formulário e fechar o modal
+            setNewMusic({ name: '', artist: '', category: '', cifra: '' });
+            setModalOpen(false);
+        } catch (error) {
+            console.error('Erro ao adicionar música: ', error);
+        }
+    };
 
     useEffect(() => {
         const fetchMusic = async () => {
@@ -45,60 +82,7 @@ export function Musicas() {
         fetchMusic();
     }, []);
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setNewMusic(prevState => ({ ...prevState, [name]: value }));
-    };
 
-    const handleAddMusic = async () => {
-        try {
-            setUploading(true);
-            const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-            let imageUrl = '';
-            if (fileInput && fileInput.files && fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const storage = getStorage();
-                // const storageRef = ref(storage, `imageMusic/${file.name}`);
-                // const uploadTask = uploadBytesResumable(storageRef, file);
-                // const snapshot = await uploadTask;
-                // imageUrl = await getDownloadURL(snapshot.ref);
-            }
-            // const docRef = await addDoc(collection(db, 'musicas'), { ...newMusic, imageUrl });
-            // setMusic(prevMusic => [...prevMusic, { id: docRef.id, ...newMusic, imageUrl }]);
-            setNewMusic({ name: '', artist: '', category: 'louvor' });
-            setModalOpen(false);
-        } catch (error) {
-            console.error('Erro ao adicionar música: ', error);
-        } finally {
-            setUploading(false);
-        }
-    };
-
-    const handleUpload = async (file: File) => {
-        if (file) {
-            try {
-                // const storage = getStorage();
-                // const storageRef = ref(storage, `imageMusic/${newMusic.name}`);
-                // await uploadBytesResumable(storageRef, file);
-                console.log("Arquivo enviado com sucesso!")
-            } catch (error) {
-                console.error('Erro ao enviar imagem: ', error);
-            }
-        }
-    };
-
-    const handleAddMusicButtonClick = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-            if (fileInput && fileInput.files && fileInput.files.length > 0) {
-                await handleUpload(fileInput.files[0]);
-            }
-            handleAddMusic()
-        } catch (error) {
-            console.error('Erro ao adicionar música: ', error);
-        }
-    };
 
     const openModal = () => {
         setModalOpen(true);
@@ -124,22 +108,12 @@ export function Musicas() {
 
     // DADOS DOS DIAS --------------------------------------------------------------------------------------------------
 
-    type Dia = {
-        id: string;
-        data: string;
-        horario: string;
-        tipoCulto: string;
-    };
-
-    type DadosDoFirebase = Record<string, Dia>;
-
     const [data, setData] = useState<DadosDoFirebase>({});
 
     useEffect(() => {
         const diasRef = ref(database, 'dias/');
         onValue(diasRef, (snapshot) => {
             const dadosDoFirebase = snapshot.val();
-            console.log('Dados do Firebase:', dadosDoFirebase); // Adicione este log
             if (dadosDoFirebase) {
                 const dadosArray = Object.entries<Dia>(dadosDoFirebase);
                 const dadosInvertidosArray = dadosArray.reverse();
@@ -157,6 +131,26 @@ export function Musicas() {
     const handleDiaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDiaId(e.target.value);
     };
+
+
+    // ADICIONANDO MÚSICA AO DIA SELECIONADO NO "RÁDIO" ----------------------------------------------------------------
+
+    const handleAddMusicSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (selectedDiaId) {
+            try {
+                const diaRef = ref(database, `dias/${selectedDiaId}/musicasAdicionadas`);
+                const existingMusicasSnapshot = await get(diaRef);
+                const existingMusicas = existingMusicasSnapshot.val() || [];
+                const updatedMusicas = [...existingMusicas, { name: selectedMusicName, artist: selectedMusicArtist }];
+                await update(ref(database, `dias/${selectedDiaId}`), { musicasAdicionadas: updatedMusicas });
+                closeModal();
+            } catch (error) {
+                console.error('Erro ao adicionar música:', error);
+            }
+        }
+    };
+
 
     return (
         <div className='container-music'>
@@ -187,11 +181,11 @@ export function Musicas() {
                             onChange={(e) => setSelectedCategory(e.target.value)}
                         >
                             <option value="">Todas as categorias</option>
-                            <option value="louvor">Louvor</option>
-                            <option value="alegre">Alegre</option>
-                            <option value="rapida">Rápida</option>
-                            <option value="lenta">Lenta</option>
-                            <option value="adoracao">Adoração</option>
+                            <option value="Louvor">Louvor</option>
+                            <option value="Alegre">Alegre</option>
+                            <option value="Rápida">Rápida</option>
+                            <option value="Lenta">Lenta</option>
+                            <option value="Adoração">Adoração</option>
                         </select>
 
 
@@ -242,7 +236,7 @@ export function Musicas() {
                     <div className="modal-content">
                         <span className="close" onClick={closeModal}>&times;</span>
                         <h2>Adicionar Música</h2>
-                        <form onSubmit={handleAddMusicButtonClick}>
+                        <form onSubmit={handleSubmit}>
                             <input
                                 type="text"
                                 name="name"
@@ -265,26 +259,23 @@ export function Musicas() {
                                 onChange={handleInputChange}
                                 required
                             >
-                                <option value="louvor">Louvor</option>
-                                <option value="alegre">Alegre</option>
-                                <option value="rapida">Rápida</option>
-                                <option value="lenta">Lenta</option>
-                                <option value="adoracao">Adoração</option>
+                                <option value="Louvor">Louvor</option>
+                                <option value="Alegre">Alegre</option>
+                                <option value="Rápida">Rápida</option>
+                                <option value="Lenta">Lenta</option>
+                                <option value="Adoração">Adoração</option>
                             </select>
-                            <input
-                                id="fileInput"
-                                type="file"
-                            />
-                            {uploading ? (
-                                <>
-                                    <span>Carregando...</span>
-                                    <button className="btn-loading" type="submit" disabled>
-                                        <div className="loader"></div>
-                                    </button>
-                                </>
-                            ) : (
-                                <button type="submit" >Adicionar Música</button>
-                            )}
+
+                            <textarea
+                                name="cifra"
+                                value={newMusic.cifra}
+                                onChange={handleInputChange}
+                                placeholder="Cifra da Música"
+                                id="cifra"
+                                cols={30}
+                                rows={10}>
+                            </textarea>
+                            <button type="submit" >Adicionar Música</button>
                         </form>
                     </div>
                 </div>
@@ -298,7 +289,7 @@ export function Musicas() {
                         <p>{selectedMusicName} - {selectedMusicArtist}</p>
                         <br />
                         <h2>A qual evento adicionar?</h2>
-                        <form className="form-rapidos">
+                        <form className="form-rapidos" onSubmit={handleAddMusicSubmit}>
                             <div className="div-form-rapio">
                                 {Object.entries(data).map(([key, dia]) => (
                                     <label key={key}>
