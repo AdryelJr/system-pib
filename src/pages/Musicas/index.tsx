@@ -181,7 +181,7 @@ export function Musicas() {
                         </ul>
                     )}
                 </main>
-                {(user && user.uid === "Qu3xbobOndcykGPCNXMmoGWeXBC2") && (
+                {(user && user.uid == "Qu3xbobOndcykGPCNXMmoGWeXBC2" || user && user.uid == "Ge7RBqSFOcd9LxLul0y5A7gcjUh1" || user && user.uid == "xmylsFPyRAMezVJuOiEtY5qzHC43") && (
                     <button className="btn-add-music" onClick={openModal}>Adicionar Música</button>
                 )}
             </div>
