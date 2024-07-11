@@ -89,7 +89,6 @@ export function MusicaTheDay() {
                     <div>
                         <h2>Músicas do dia: {informacoesDia.data}</h2>
                     </div>
-                    <br />
                     <div>
                         {listaMusicas.length > 0 ? (
                             <ol>
@@ -109,7 +108,7 @@ export function MusicaTheDay() {
                     {nomeMusica && (
                         <>
                             <div className='div-main-cifra'>
-                                <div>
+                                <div className='div-main-dentro'>
                                     <h2>{nomeMusica}</h2>
                                     <h4>{autorMusica}</h4>
                                 </div>
