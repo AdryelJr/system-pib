@@ -167,7 +167,7 @@ export function Musicas() {
                                 .map(musicItem => (
                                     <div key={musicItem.id} className="div-music-item">
                                         <li >{musicItem.name} - {musicItem.artist} ({musicItem.category})</li>
-                                        {(user && user.uid == "Qu3xbobOndcykGPCNXMmoGWeXBC2") && (
+                                        {(user && user.uid == "Qu3xbobOndcykGPCNXMmoGWeXBC2" || user && user.uid == "Ge7RBqSFOcd9LxLul0y5A7gcjUh1" || user && user.uid == "xmylsFPyRAMezVJuOiEtY5qzHC43") && (
                                             <button className="button-add-music-dia">
                                                 add
                                             </button>
