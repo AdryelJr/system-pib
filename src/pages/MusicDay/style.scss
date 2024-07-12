@@ -23,7 +23,12 @@ $background-color: #F8F8FC;
             border-bottom: 1px solid #bebebe;
             padding-bottom: .5em;
             max-width: 95vw;
-            height: 20vh;
+            height: 21vh;
+
+            h3{
+                color: #ccc;
+                margin-bottom: 5px;
+            }
 
             .div-p-musicas {
                 max-width: 100%;

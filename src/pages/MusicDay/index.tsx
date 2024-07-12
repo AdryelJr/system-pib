@@ -87,7 +87,7 @@ export function MusicaTheDay() {
             <div className="content-musicTheDay">
                 <header>
                     <div>
-                        <h2>Músicas do dia: {informacoesDia.data}</h2>
+                        <h3>Músicas do dia: {informacoesDia.data}</h3>
                     </div>
                     <div className='div-p-musicas'>
                         {listaMusicas.length > 0 ? (
