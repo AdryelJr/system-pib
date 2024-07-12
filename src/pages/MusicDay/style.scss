@@ -78,6 +78,13 @@ $background-color: #F8F8FC;
         column-count: 2;
         column-gap: 25px;
     }
+    .content-musicTheDay {
+        header {
+            ol {
+                max-width: 70% !important;
+            }
+        }
+    }
 }
 
 @media (min-width: 1140px) {
@@ -93,7 +100,6 @@ $background-color: #F8F8FC;
                 li {
                     max-width: 200px;
                 }
-
             }
         }
     }
