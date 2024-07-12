@@ -115,7 +115,20 @@ export function MusicaTheDay() {
                                 <span>Categoria: {categoryMusica}</span>
                             </div>
                             <div className='cifra-container'>
-                                <pre className='cifra'>{cifraMusica}</pre> 
+                                <pre className='cifra'>
+                                    {cifraMusica.split('\n').map((linha, index) => (
+                                        <span key={index}>
+                                            {linha.split(/(\[.*?\])/).map((item, index) => {
+                                                if (item.startsWith('[')) {
+                                                    return <span key={index} className='acord'>{item}</span>;
+                                                } else {
+                                                    return <span key={index}>{item}</span>;
+                                                }
+                                            })}
+                                            <br />
+                                        </span>
+                                    ))}
+                                </pre>
                             </div>
                         </>
                     )}
@@ -123,6 +136,8 @@ export function MusicaTheDay() {
                         <div>Escolha uma música.</div>
                     )}
                 </main>
+
+
             </div>
         </div>
     );
