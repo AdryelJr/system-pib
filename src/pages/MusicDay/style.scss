@@ -26,9 +26,19 @@ $background-color: #F8F8FC;
             ol {
                 padding: 0 1em;
                 color: rgb(4, 4, 179);
+                max-height: 20vh;
+                column-count: 2;
 
                 li {
-                    margin: .6em 0;
+                    break-inside: avoid;
+                    max-width: 150px;
+                    background-color: rgb(202, 204, 202);
+                    padding: .5em;
+                    margin-bottom: .5em;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
             }
         }
@@ -44,23 +54,22 @@ $background-color: #F8F8FC;
                 max-height: 70vh;
                 padding: 0 10px;
                 line-height: 1.6;
-                border: 1px solid red;
-                overflow-y: scroll;
-
-                .cifra {
-                    column-count: 2;
-                    column-gap: 20px;
-                    break-inside: avoid-column;
-                }
+                overflow-x: auto;
             }
         }
     }
 }
 
-// @media (min-width: 768px) {
-//     .content-musicTheDay main .cifra-container {
-//         display: grid;
-//         grid-template-columns: 1fr 1fr;
-//         gap: 16px;
-//     }
-// }
+@media (min-width: 750px) {
+    .cifra-container {
+        column-count: 2;
+        column-gap: 25px;
+    }
+}
+
+@media (min-width: 1140px) {
+    .cifra-container {
+        column-count: 3;
+        column-gap: 0px;
+    }
+}
