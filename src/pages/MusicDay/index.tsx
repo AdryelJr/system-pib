@@ -89,17 +89,17 @@ export function MusicaTheDay() {
                     <div>
                         <h2>Músicas do dia: {informacoesDia.data}</h2>
                     </div>
-                    <div>
+                    <div className='div-p-musicas'>
                         {listaMusicas.length > 0 ? (
-                            <ol>
+                            <>
                                 {listaMusicas.map((musica, index) => (
-                                    <li key={index} onClick={() => handleApareca(musica.name, musica.artist)}>
+                                    <span key={index} onClick={() => handleApareca(musica.name, musica.artist)}>
                                         {musica.name} - {musica.artist}
-                                    </li>
+                                    </span>
                                 ))}
-                            </ol>
+                            </>
                         ) : (
-                            <div>Nenhuma música adicionada.</div>
+                            <div className='div-texto-nenhuma-musica'>Nenhuma música adicionada.</div>
                         )}
                     </div>
                 </header>
@@ -137,7 +137,7 @@ export function MusicaTheDay() {
                         </>
                     )}
                     {!nomeMusica && (
-                        <div>Escolha uma música.</div>
+                        <div className='div-texto-nenhuma-musica'>Escolha uma música.</div>
                     )}
                 </main>
 
