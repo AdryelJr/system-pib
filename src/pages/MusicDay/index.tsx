@@ -111,9 +111,12 @@ export function MusicaTheDay() {
                                 <div className='div-main-cifra'>
                                     <div className='div-main-dentro'>
                                         <h2>{nomeMusica}</h2>
-                                        <h4>{autorMusica}</h4>
+                                        <div className='div-autorecategoria'>
+                                            <h4>{autorMusica}</h4>
+                                            <span>Categoria: {categoryMusica}</span>
+                                        </div>
                                     </div>
-                                    <span>Categoria: {categoryMusica}</span>
+
                                 </div>
 
                                 <pre className='cifra'>

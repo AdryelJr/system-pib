@@ -48,16 +48,30 @@ $background-color: #F8F8FC;
 
         main {
             .div-main-cifra {
-                padding: 1em 0;
                 display: flex;
                 justify-content: space-between;
                 overflow-y: auto;
                 max-height: 70vh;
+
+                
+
+                h2 {
+                    color: orangered;
+                }
+
+                .div-autorecategoria {
+                    display: flex;
+
+                    span {
+                        margin-left: 10px;
+                        color: rgb(176, 176, 176);
+                    }
+                }
             }
 
             .cifra-container {
-                max-height: 70vh;
-                padding: 0 10px;
+                max-height: 80vh;
+                padding: 10px;
                 line-height: 1.6;
                 overflow-x: auto;
 
@@ -80,6 +94,7 @@ $background-color: #F8F8FC;
         column-count: 2;
         column-gap: 25px;
     }
+
     .content-musicTheDay {
         header {
             ol {
@@ -99,10 +114,32 @@ $background-color: #F8F8FC;
         header {
             ol {
                 max-width: 70% !important;
+
                 li {
                     max-width: 200px;
                 }
             }
         }
     }
+}
+
+
+::-webkit-scrollbar {
+    width: 5px !important; 
+}
+
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: rgba(252, 138, 96, 0.548); 
+    border-radius: 6px; 
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 72, 6, 0.647); 
 }
