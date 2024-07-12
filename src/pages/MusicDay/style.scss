@@ -76,6 +76,7 @@ $background-color: #F8F8FC;
                 overflow-x: auto;
 
                 .cifra {
+                    
                     color: #000;
                     white-space: pre-wrap;
                 }
@@ -121,25 +122,4 @@ $background-color: #F8F8FC;
             }
         }
     }
-}
-
-
-::-webkit-scrollbar {
-    width: 5px !important; 
-}
-
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-}
-
-
-::-webkit-scrollbar-thumb {
-    background: rgba(252, 138, 96, 0.548); 
-    border-radius: 6px; 
-}
-
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 72, 6, 0.647); 
 }
