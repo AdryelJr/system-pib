@@ -13,11 +13,9 @@ $background-color: #F8F8FC;
 
     .content-musicTheDay {
         position: relative;
-        margin-top: -2.5em;
         width: 90vw;
         min-width: 420px;
         min-height: 95vh;
-        // max-height: 100vh;
         padding: 1em;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
@@ -44,26 +42,25 @@ $background-color: #F8F8FC;
 
             .cifra-container {
                 max-height: 70vh;
-                padding: 10px;
-                overflow-x: auto;
-                max-width: 100%;
-                line-height: 1.5;
-                display: flex;
-                flex-direction: column;
+                padding: 0 10px;
+                line-height: 1.6;
+                border: 1px solid red;
+                overflow-y: scroll;
 
-                pre{
-                    white-space: pre-wrap;
+                .cifra {
+                    column-count: 2;
+                    column-gap: 20px;
+                    break-inside: avoid-column;
                 }
             }
         }
-
     }
 }
 
-@media(width >=766px) {
-    .cifra-container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-    }
-}
+// @media (min-width: 768px) {
+//     .content-musicTheDay main .cifra-container {
+//         display: grid;
+//         grid-template-columns: 1fr 1fr;
+//         gap: 16px;
+//     }
+// }
