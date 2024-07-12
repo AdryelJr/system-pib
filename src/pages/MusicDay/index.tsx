@@ -107,14 +107,15 @@ export function MusicaTheDay() {
                 <main>
                     {nomeMusica && (
                         <>
-                            <div className='div-main-cifra'>
-                                <div className='div-main-dentro'>
-                                    <h2>{nomeMusica}</h2>
-                                    <h4>{autorMusica}</h4>
-                                </div>
-                                <span>Categoria: {categoryMusica}</span>
-                            </div>
                             <div className='cifra-container'>
+                                <div className='div-main-cifra'>
+                                    <div className='div-main-dentro'>
+                                        <h2>{nomeMusica}</h2>
+                                        <h4>{autorMusica}</h4>
+                                    </div>
+                                    <span>Categoria: {categoryMusica}</span>
+                                </div>
+
                                 <pre className='cifra'>
                                     {cifraMusica.split('\n').map((linha, index) => (
                                         <span key={index}>

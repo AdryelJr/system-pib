@@ -188,7 +188,6 @@ export function Musicas() {
                             <option value="Adoração">Adoração</option>
                         </select>
 
-
                     </form>
                 </div>
                 <main>
