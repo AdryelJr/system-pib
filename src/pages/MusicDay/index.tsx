@@ -115,7 +115,7 @@ export function MusicaTheDay() {
                                 <span>Categoria: {categoryMusica}</span>
                             </div>
                             <div className='cifra'>
-                                {/* <pre>{cifraMusica}</pre> */}
+                                <pre>{cifraMusica}</pre>
                                 {cifraMusica.split('\n').map((line, index) => (
                                     <div key={index}>{line}</div>
                                 ))}
