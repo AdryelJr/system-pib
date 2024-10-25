@@ -20,8 +20,6 @@ export function MusicaTheDay() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [nomeMusica, setNomeMusica] = useState<string>('');
-    const [autorMusica, setAutorMusica] = useState<string>('');
-    const [categoryMusica, setCategoryMusica] = useState<string>('');
     const [cifraMusica, setCifraMusica] = useState<string>('');
 
     useEffect(() => {
@@ -65,8 +63,6 @@ export function MusicaTheDay() {
                 const doc = querySnapshot.docs[0];
                 const musicData = doc.data() as Musica;
                 setNomeMusica(musicData.name);
-                setAutorMusica(musicData.artist);
-                setCategoryMusica(musicData.category);
                 setCifraMusica(musicData.cifra);
             }
         } catch (error) {
@@ -86,9 +82,6 @@ export function MusicaTheDay() {
         <div className="container-musicTheDay">
             <div className="content-musicTheDay">
                 <header>
-                    <div>
-                        <h3>Músicas do dia: {informacoesDia.data}</h3>
-                    </div>
                     <div className='div-p-musicas'>
                         {listaMusicas.length > 0 ? (
                             <>
@@ -110,21 +103,26 @@ export function MusicaTheDay() {
                             <div className='cifra-container'>
                                 <div className='div-main-cifra'>
                                     <div className='div-main-dentro'>
-                                        <h2>{nomeMusica}</h2>
+                                        <h3>{nomeMusica}</h3>
                                         <div className='div-autorecategoria'>
-                                            <h4>{autorMusica}</h4>
-                                            <span>Categoria: {categoryMusica}</span>
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <pre className='cifra'>
                                     {cifraMusica.split('\n').map((linha, index) => (
                                         <span key={index}>
-                                            {linha.split(/([\[\(][^\]\)]*[\]\)])/).map((item, index) => {
-                                                if (item.startsWith('[') || item.startsWith('(')) {
-                                                    return <span key={index} className='acord'>{item}</span>;
+                                            {linha.split(/([\[\(\{\'\"\"][^\]\)\}\'\"\"]*[\]\)\}\'\"\"])/).map((item, index) => {
+                                                if (item.startsWith('"') || item.startsWith("'")) {
+                                                    return (
+                                                        <span key={index} className="acord">
+                                                            <span className="invisible-quotes">{item.charAt(0)}</span>
+                                                            {item.slice(1, -1)}
+                                                            <span className="invisible-quotes">{item.charAt(item.length - 1)}</span>
+                                                        </span>
+                                                    );
+                                                } else if (/[\[\](){}]/.test(item)) {
+                                                    return <span key={index} className="colored-brackets">{item}</span>;
                                                 } else {
                                                     return <span key={index}>{item}</span>;
                                                 }
@@ -132,6 +130,7 @@ export function MusicaTheDay() {
                                             <br />
                                         </span>
                                     ))}
+
                                 </pre>
                             </div>
                         </>
@@ -140,8 +139,6 @@ export function MusicaTheDay() {
                         <div className='div-texto-nenhuma-musica'>Escolha uma música.</div>
                     )}
                 </main>
-
-
 
             </div>
         </div>
